@@ -1,0 +1,6 @@
+instances          : 20000  (seed 20260101)
+shared-channel inst: 20000
+bound violations   : 0
+min slack          : -0.000000
+tightness EVPI/bound: mean 0.339  max 1.000
+wrote exp_E_conjecture1.csv

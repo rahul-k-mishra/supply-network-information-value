@@ -1,0 +1,12 @@
+instances                : 2000  (seed 991)
+channels                 : 4997
+per-channel violations   : 0   (IDX_k < EVPPI_k; must be 0)
+whole-instance violations: 0   (sum IDX < EVPI; must be 0)
+non-degenerate channels  : 4996
+Pearson  r=+0.6002  p=0.00e+00
+Spearman r=+0.5136  p=0.00e+00
+MAE                      : 0.02797
+median relative slack    : +1.836  (0 = tight, >0 = conservative)
+runtime exact EVPPI      : 2.58s
+runtime IDX              : 0.76s   speedup x3.4
+wrote exp_A_idx_vs_evppi.csv

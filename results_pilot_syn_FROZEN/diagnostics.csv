@@ -1,0 +1,13 @@
+name,n_nodes,n_edges,max_tier,n_chokepoints_tier2plus
+synthetic_scalefree_00,977,641,4,8
+synthetic_scalefree_01,977,624,4,9
+synthetic_scalefree_02,977,633,4,3
+synthetic_scalefree_03,977,633,4,8
+synthetic_scalefree_04,977,640,4,6
+synthetic_scalefree_05,977,636,4,7
+synthetic_scalefree_06,977,633,4,6
+synthetic_scalefree_07,977,632,4,5
+synthetic_scalefree_08,977,608,4,6
+synthetic_scalefree_09,977,652,4,7
+synthetic_scalefree_10,977,621,4,5
+synthetic_scalefree_11,977,634,4,7

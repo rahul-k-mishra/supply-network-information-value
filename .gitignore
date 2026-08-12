@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*.bak
+results_new/
+results_tmp*/
+_filelist*.txt

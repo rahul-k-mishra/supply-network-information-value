@@ -1,0 +1,356 @@
+[asdr2 runner r9 | lambda-latent-attributes | pilot gates]
+  chain 07: stages=  38 links=  78 matched=  78 sinks= 6 focal=__market__(6 sinks)  cls=Market       cone=  38 -> KEPT
+  chain 09: stages=  49 links=  52 matched=  52 sinks=26 focal=__market__(26 sinks) cls=Market       cone=  49 -> KEPT
+  chain 11: stages=  68 links= 108 matched= 108 sinks=18 focal=__market__(18 sinks) cls=Market       cone=  68 -> KEPT
+  chain 14: stages= 116 links= 119 matched= 119 sinks=66 focal=__market__(66 sinks) cls=Market       cone= 116 -> KEPT
+  chain 17: stages= 152 links= 211 matched= 211 sinks=98 focal=__market__(98 sinks) cls=Market       cone= 152 -> KEPT
+  chain 18: stages= 154 links= 224 matched= 224 sinks=28 focal=__market__(28 sinks) cls=Market       cone= 154 -> KEPT
+  chain 19: stages= 156 links= 263 matched= 263 sinks=15 focal=__market__(15 sinks) cls=Market       cone= 156 -> KEPT
+  chain 21: stages= 186 links= 359 matched= 359 sinks=34 focal=__market__(34 sinks) cls=Market       cone= 186 -> KEPT
+                 name  n_nodes  n_edges  max_tier  n_chokepoints_tier2plus
+willems_chain07_seed0       39       84         4                        6
+willems_chain09_seed0       50       78         5                        3
+willems_chain11_seed0       69      126         5                       24
+willems_chain14_seed0      117      185         4                       50
+willems_chain17_seed0      153      309         5                       37
+willems_chain18_seed0      155      252         8                       72
+willems_chain19_seed0      157      278         9                        5
+willems_chain21_seed0      187      393         7                       66
+willems_chain07_seed1       39       84         4                        6
+willems_chain09_seed1       50       78         5                        3
+willems_chain11_seed1       69      126         5                       24
+willems_chain14_seed1      117      185         4                       50
+willems_chain17_seed1      153      309         5                       37
+willems_chain18_seed1      155      252         8                       72
+willems_chain19_seed1      157      278         9                        5
+willems_chain21_seed1      187      393         7                       66
+willems_chain07_seed2       39       84         4                        6
+willems_chain09_seed2       50       78         5                        3
+willems_chain11_seed2       69      126         5                       24
+willems_chain14_seed2      117      185         4                       50
+willems_chain17_seed2      153      309         5                       37
+willems_chain18_seed2      155      252         8                       72
+willems_chain19_seed2      157      278         9                        5
+willems_chain21_seed2      187      393         7                       66
+[1/3] PILOT: training skipped (None + Oracle need none)
+[2/3] evaluation...
+    net 1/24 (willems_chain07_seed0) done
+    net 2/24 (willems_chain09_seed0) done
+    net 3/24 (willems_chain11_seed0) done
+    net 4/24 (willems_chain14_seed0) done
+    net 5/24 (willems_chain17_seed0) done
+    net 6/24 (willems_chain18_seed0) done
+    net 7/24 (willems_chain19_seed0) done
+    net 8/24 (willems_chain21_seed0) done
+    net 9/24 (willems_chain07_seed1) done
+    net 10/24 (willems_chain09_seed1) done
+    net 11/24 (willems_chain11_seed1) done
+    net 12/24 (willems_chain14_seed1) done
+    net 13/24 (willems_chain17_seed1) done
+    net 14/24 (willems_chain18_seed1) done
+    net 15/24 (willems_chain19_seed1) done
+    net 16/24 (willems_chain21_seed1) done
+    net 17/24 (willems_chain07_seed2) done
+    net 18/24 (willems_chain09_seed2) done
+    net 19/24 (willems_chain11_seed2) done
+    net 20/24 (willems_chain14_seed2) done
+    net 21/24 (willems_chain17_seed2) done
+    net 22/24 (willems_chain18_seed2) done
+    net 23/24 (willems_chain19_seed2) done
+    net 24/24 (willems_chain21_seed2) done
+
+=== PILOT VERDICT (registered gates) ===
+instances=24  ceiling: median=0.0000  mean=0.0063  frac>0.02=0.12  max=0.0557
+split-half reliability of ceiling: spearman=nan (p=nan)
+G1 (ceilings open):     KILL -- H1 wins, program dead
+G2 (reliability >=0.5): FAIL -- no moderator test
+[asdr2 runner r9 | lambda-latent-attributes | pilot gates]
+  chain 07: stages=  38 links=  78 matched=  78 sinks= 6 focal=__market__(6 sinks)  cls=Market       cone=  38 -> KEPT
+  chain 09: stages=  49 links=  52 matched=  52 sinks=26 focal=__market__(26 sinks) cls=Market       cone=  49 -> KEPT
+  chain 11: stages=  68 links= 108 matched= 108 sinks=18 focal=__market__(18 sinks) cls=Market       cone=  68 -> KEPT
+  chain 14: stages= 116 links= 119 matched= 119 sinks=66 focal=__market__(66 sinks) cls=Market       cone= 116 -> KEPT
+  chain 17: stages= 152 links= 211 matched= 211 sinks=98 focal=__market__(98 sinks) cls=Market       cone= 152 -> KEPT
+  chain 18: stages= 154 links= 224 matched= 224 sinks=28 focal=__market__(28 sinks) cls=Market       cone= 154 -> KEPT
+  chain 19: stages= 156 links= 263 matched= 263 sinks=15 focal=__market__(15 sinks) cls=Market       cone= 156 -> KEPT
+  chain 21: stages= 186 links= 359 matched= 359 sinks=34 focal=__market__(34 sinks) cls=Market       cone= 186 -> KEPT
+                 name  n_nodes  n_edges  max_tier  n_chokepoints_tier2plus
+willems_chain07_seed0       39       84         4                        6
+willems_chain09_seed0       50       78         5                        3
+willems_chain11_seed0       69      126         5                       24
+willems_chain14_seed0      117      185         4                       50
+willems_chain17_seed0      153      309         5                       37
+willems_chain18_seed0      155      252         8                       72
+willems_chain19_seed0      157      278         9                        5
+willems_chain21_seed0      187      393         7                       66
+willems_chain07_seed1       39       84         4                        6
+willems_chain09_seed1       50       78         5                        3
+willems_chain11_seed1       69      126         5                       24
+willems_chain14_seed1      117      185         4                       50
+willems_chain17_seed1      153      309         5                       37
+willems_chain18_seed1      155      252         8                       72
+willems_chain19_seed1      157      278         9                        5
+willems_chain21_seed1      187      393         7                       66
+willems_chain07_seed2       39       84         4                        6
+willems_chain09_seed2       50       78         5                        3
+willems_chain11_seed2       69      126         5                       24
+willems_chain14_seed2      117      185         4                       50
+willems_chain17_seed2      153      309         5                       37
+willems_chain18_seed2      155      252         8                       72
+willems_chain19_seed2      157      278         9                        5
+willems_chain21_seed2      187      393         7                       66
+[1/3] PILOT: training skipped (None + Oracle need none)
+[2/3] evaluation...
+    net 1/24 (willems_chain07_seed0) done
+    net 2/24 (willems_chain09_seed0) done
+    net 3/24 (willems_chain11_seed0) done
+    net 4/24 (willems_chain14_seed0) done
+    net 5/24 (willems_chain17_seed0) done
+    net 6/24 (willems_chain18_seed0) done
+    net 7/24 (willems_chain19_seed0) done
+    net 8/24 (willems_chain21_seed0) done
+    net 9/24 (willems_chain07_seed1) done
+    net 10/24 (willems_chain09_seed1) done
+    net 11/24 (willems_chain11_seed1) done
+    net 12/24 (willems_chain14_seed1) done
+    net 13/24 (willems_chain17_seed1) done
+    net 14/24 (willems_chain18_seed1) done
+    net 15/24 (willems_chain19_seed1) done
+    net 16/24 (willems_chain21_seed1) done
+    net 17/24 (willems_chain07_seed2) done
+    net 18/24 (willems_chain09_seed2) done
+    net 19/24 (willems_chain11_seed2) done
+    net 20/24 (willems_chain14_seed2) done
+    net 21/24 (willems_chain17_seed2) done
+    net 22/24 (willems_chain18_seed2) done
+    net 23/24 (willems_chain19_seed2) done
+    net 24/24 (willems_chain21_seed2) done
+
+=== PILOT VERDICT (registered gates) ===
+instances=24  ceiling: median=0.0000  mean=0.0020  frac>0.02=0.04  max=0.0260
+split-half reliability of ceiling: spearman=nan (p=nan)
+G1 (ceilings open):     KILL -- H1 wins, program dead
+G2 (reliability >=0.5): FAIL -- no moderator test
+[asdr2 runner r9 | lambda-latent-attributes | pilot gates]
+  chain 07: stages=  38 links=  78 matched=  78 sinks= 6 focal=__market__(6 sinks)  cls=Market       cone=  38 -> KEPT
+  chain 09: stages=  49 links=  52 matched=  52 sinks=26 focal=__market__(26 sinks) cls=Market       cone=  49 -> KEPT
+  chain 11: stages=  68 links= 108 matched= 108 sinks=18 focal=__market__(18 sinks) cls=Market       cone=  68 -> KEPT
+  chain 14: stages= 116 links= 119 matched= 119 sinks=66 focal=__market__(66 sinks) cls=Market       cone= 116 -> KEPT
+  chain 17: stages= 152 links= 211 matched= 211 sinks=98 focal=__market__(98 sinks) cls=Market       cone= 152 -> KEPT
+  chain 18: stages= 154 links= 224 matched= 224 sinks=28 focal=__market__(28 sinks) cls=Market       cone= 154 -> KEPT
+  chain 19: stages= 156 links= 263 matched= 263 sinks=15 focal=__market__(15 sinks) cls=Market       cone= 156 -> KEPT
+  chain 21: stages= 186 links= 359 matched= 359 sinks=34 focal=__market__(34 sinks) cls=Market       cone= 186 -> KEPT
+                 name  n_nodes  n_edges  max_tier  n_chokepoints_tier2plus
+willems_chain07_seed0       39       84         4                        6
+willems_chain09_seed0       50       78         5                        3
+willems_chain11_seed0       69      126         5                       24
+willems_chain14_seed0      117      185         4                       50
+willems_chain17_seed0      153      309         5                       37
+willems_chain18_seed0      155      252         8                       72
+willems_chain19_seed0      157      278         9                        5
+willems_chain21_seed0      187      393         7                       66
+willems_chain07_seed1       39       84         4                        6
+willems_chain09_seed1       50       78         5                        3
+willems_chain11_seed1       69      126         5                       24
+willems_chain14_seed1      117      185         4                       50
+willems_chain17_seed1      153      309         5                       37
+willems_chain18_seed1      155      252         8                       72
+willems_chain19_seed1      157      278         9                        5
+willems_chain21_seed1      187      393         7                       66
+willems_chain07_seed2       39       84         4                        6
+willems_chain09_seed2       50       78         5                        3
+willems_chain11_seed2       69      126         5                       24
+willems_chain14_seed2      117      185         4                       50
+willems_chain17_seed2      153      309         5                       37
+willems_chain18_seed2      155      252         8                       72
+willems_chain19_seed2      157      278         9                        5
+willems_chain21_seed2      187      393         7                       66
+[1/3] PILOT: training skipped (None + Oracle need none)
+[2/3] evaluation...
+    net 1/24 (willems_chain07_seed0) done
+    net 2/24 (willems_chain09_seed0) done
+    net 3/24 (willems_chain11_seed0) done
+    net 4/24 (willems_chain14_seed0) done
+    net 5/24 (willems_chain17_seed0) done
+    net 6/24 (willems_chain18_seed0) done
+    net 7/24 (willems_chain19_seed0) done
+    net 8/24 (willems_chain21_seed0) done
+    net 9/24 (willems_chain07_seed1) done
+    net 10/24 (willems_chain09_seed1) done
+    net 11/24 (willems_chain11_seed1) done
+    net 12/24 (willems_chain14_seed1) done
+    net 13/24 (willems_chain17_seed1) done
+    net 14/24 (willems_chain18_seed1) done
+    net 15/24 (willems_chain19_seed1) done
+    net 16/24 (willems_chain21_seed1) done
+    net 17/24 (willems_chain07_seed2) done
+    net 18/24 (willems_chain09_seed2) done
+    net 19/24 (willems_chain11_seed2) done
+    net 20/24 (willems_chain14_seed2) done
+    net 21/24 (willems_chain17_seed2) done
+    net 22/24 (willems_chain18_seed2) done
+    net 23/24 (willems_chain19_seed2) done
+    net 24/24 (willems_chain21_seed2) done
+
+=== PILOT VERDICT (registered gates) ===
+instances=24  ceiling: median=0.0008  mean=0.0047  frac>0.02=0.04  max=0.0733
+split-half reliability of ceiling: spearman=nan (p=nan)
+G1 (ceilings open):     KILL -- H1 wins, program dead
+G2 (reliability >=0.5): FAIL -- no moderator test
+[asdr2 runner r9 | lambda-latent-attributes | pilot gates]
+  chain 07: stages=  38 links=  78 matched=  78 sinks= 6 focal=__market__(6 sinks)  cls=Market       cone=  38 -> KEPT
+  chain 09: stages=  49 links=  52 matched=  52 sinks=26 focal=__market__(26 sinks) cls=Market       cone=  49 -> KEPT
+  chain 11: stages=  68 links= 108 matched= 108 sinks=18 focal=__market__(18 sinks) cls=Market       cone=  68 -> KEPT
+  chain 14: stages= 116 links= 119 matched= 119 sinks=66 focal=__market__(66 sinks) cls=Market       cone= 116 -> KEPT
+  chain 17: stages= 152 links= 211 matched= 211 sinks=98 focal=__market__(98 sinks) cls=Market       cone= 152 -> KEPT
+  chain 18: stages= 154 links= 224 matched= 224 sinks=28 focal=__market__(28 sinks) cls=Market       cone= 154 -> KEPT
+  chain 19: stages= 156 links= 263 matched= 263 sinks=15 focal=__market__(15 sinks) cls=Market       cone= 156 -> KEPT
+  chain 21: stages= 186 links= 359 matched= 359 sinks=34 focal=__market__(34 sinks) cls=Market       cone= 186 -> KEPT
+                 name  n_nodes  n_edges  max_tier  n_chokepoints_tier2plus
+willems_chain07_seed0       39       84         4                        6
+willems_chain09_seed0       50       78         5                        3
+willems_chain11_seed0       69      126         5                       24
+willems_chain14_seed0      117      185         4                       50
+willems_chain17_seed0      153      309         5                       37
+willems_chain18_seed0      155      252         8                       72
+willems_chain19_seed0      157      278         9                        5
+willems_chain21_seed0      187      393         7                       66
+willems_chain07_seed1       39       84         4                        6
+willems_chain09_seed1       50       78         5                        3
+willems_chain11_seed1       69      126         5                       24
+willems_chain14_seed1      117      185         4                       50
+willems_chain17_seed1      153      309         5                       37
+willems_chain18_seed1      155      252         8                       72
+willems_chain19_seed1      157      278         9                        5
+willems_chain21_seed1      187      393         7                       66
+willems_chain07_seed2       39       84         4                        6
+willems_chain09_seed2       50       78         5                        3
+willems_chain11_seed2       69      126         5                       24
+willems_chain14_seed2      117      185         4                       50
+willems_chain17_seed2      153      309         5                       37
+willems_chain18_seed2      155      252         8                       72
+willems_chain19_seed2      157      278         9                        5
+willems_chain21_seed2      187      393         7                       66
+[1/3] PILOT: training skipped (None + Oracle need none)
+[2/3] evaluation...
+    net 1/24 (willems_chain07_seed0) done
+    net 2/24 (willems_chain09_seed0) done
+    net 3/24 (willems_chain11_seed0) done
+    net 4/24 (willems_chain14_seed0) done
+    net 5/24 (willems_chain17_seed0) done
+    net 6/24 (willems_chain18_seed0) done
+    net 7/24 (willems_chain19_seed0) done
+    net 8/24 (willems_chain21_seed0) done
+    net 9/24 (willems_chain07_seed1) done
+    net 10/24 (willems_chain09_seed1) done
+    net 11/24 (willems_chain11_seed1) done
+    net 12/24 (willems_chain14_seed1) done
+    net 13/24 (willems_chain17_seed1) done
+    net 14/24 (willems_chain18_seed1) done
+    net 15/24 (willems_chain19_seed1) done
+    net 16/24 (willems_chain21_seed1) done
+    net 17/24 (willems_chain07_seed2) done
+    net 18/24 (willems_chain09_seed2) done
+    net 19/24 (willems_chain11_seed2) done
+    net 20/24 (willems_chain14_seed2) done
+    net 21/24 (willems_chain17_seed2) done
+    net 22/24 (willems_chain18_seed2) done
+    net 23/24 (willems_chain19_seed2) done
+    net 24/24 (willems_chain21_seed2) done
+
+=== PILOT VERDICT (registered gates) ===
+instances=24  ceiling: median=0.0001  mean=0.0045  frac>0.02=0.04  max=0.0585
+split-half reliability of ceiling: spearman=nan (p=nan)
+G1 (ceilings open):     KILL -- H1 wins, program dead
+G2 (reliability >=0.5): FAIL -- no moderator test
+[asdr2 runner r9 | lambda-latent-attributes | pilot gates]
+  chain 07: stages=  38 links=  78 matched=  78 sinks= 6 focal=__market__(6 sinks)  cls=Market       cone=  38 -> KEPT
+  chain 09: stages=  49 links=  52 matched=  52 sinks=26 focal=__market__(26 sinks) cls=Market       cone=  49 -> KEPT
+  chain 11: stages=  68 links= 108 matched= 108 sinks=18 focal=__market__(18 sinks) cls=Market       cone=  68 -> KEPT
+  chain 14: stages= 116 links= 119 matched= 119 sinks=66 focal=__market__(66 sinks) cls=Market       cone= 116 -> KEPT
+  chain 17: stages= 152 links= 211 matched= 211 sinks=98 focal=__market__(98 sinks) cls=Market       cone= 152 -> KEPT
+  chain 18: stages= 154 links= 224 matched= 224 sinks=28 focal=__market__(28 sinks) cls=Market       cone= 154 -> KEPT
+  chain 19: stages= 156 links= 263 matched= 263 sinks=15 focal=__market__(15 sinks) cls=Market       cone= 156 -> KEPT
+  chain 21: stages= 186 links= 359 matched= 359 sinks=34 focal=__market__(34 sinks) cls=Market       cone= 186 -> KEPT
+                 name  n_nodes  n_edges  max_tier  n_chokepoints_tier2plus
+willems_chain07_seed0       39       84         4                        6
+willems_chain09_seed0       50       78         5                        3
+willems_chain11_seed0       69      126         5                       24
+willems_chain14_seed0      117      185         4                       50
+willems_chain17_seed0      153      309         5                       37
+willems_chain18_seed0      155      252         8                       72
+willems_chain19_seed0      157      278         9                        5
+willems_chain21_seed0      187      393         7                       66
+willems_chain07_seed1       39       84         4                        6
+willems_chain09_seed1       50       78         5                        3
+willems_chain11_seed1       69      126         5                       24
+willems_chain14_seed1      117      185         4                       50
+willems_chain17_seed1      153      309         5                       37
+willems_chain18_seed1      155      252         8                       72
+willems_chain19_seed1      157      278         9                        5
+willems_chain21_seed1      187      393         7                       66
+willems_chain07_seed2       39       84         4                        6
+willems_chain09_seed2       50       78         5                        3
+willems_chain11_seed2       69      126         5                       24
+willems_chain14_seed2      117      185         4                       50
+willems_chain17_seed2      153      309         5                       37
+willems_chain18_seed2      155      252         8                       72
+willems_chain19_seed2      157      278         9                        5
+willems_chain21_seed2      187      393         7                       66
+[1/3] PILOT: training skipped (None + Oracle need none)
+[2/3] evaluation...
+    net 1/24 (willems_chain07_seed0) done
+    net 2/24 (willems_chain09_seed0) done
+    net 3/24 (willems_chain11_seed0) done
+    net 4/24 (willems_chain14_seed0) done
+    net 5/24 (willems_chain17_seed0) done
+    net 6/24 (willems_chain18_seed0) done
+    net 7/24 (willems_chain19_seed0) done
+    net 8/24 (willems_chain21_seed0) done
+    net 9/24 (willems_chain07_seed1) done
+    net 10/24 (willems_chain09_seed1) done
+    net 11/24 (willems_chain11_seed1) done
+    net 12/24 (willems_chain14_seed1) done
+    net 13/24 (willems_chain17_seed1) done
+    net 14/24 (willems_chain18_seed1) done
+    net 15/24 (willems_chain19_seed1) done
+    net 16/24 (willems_chain21_seed1) done
+    net 17/24 (willems_chain07_seed2) done
+    net 18/24 (willems_chain09_seed2) done
+    net 19/24 (willems_chain11_seed2) done
+    net 20/24 (willems_chain14_seed2) done
+    net 21/24 (willems_chain17_seed2) done
+    net 22/24 (willems_chain18_seed2) done
+    net 23/24 (willems_chain19_seed2) done
+    net 24/24 (willems_chain21_seed2) done
+
+=== PILOT VERDICT (registered gates) ===
+instances=24  ceiling: median=0.0000  mean=0.0031  frac>0.02=0.04  max=0.0881
+split-half reliability of ceiling: spearman=nan (p=nan)
+G1 (ceilings open):     KILL -- H1 wins, program dead
+G2 (reliability >=0.5): FAIL -- no moderator test
+
+=== lambda=0.0 ===
+python run_experiment.py --dataset willems --pilot --willems-file "data\chain_data.xlsx" --lam 0.0 --chains 7,9,11,14,17,18,19,21 --overlay-seeds 3 --seeds-per-net 8 --min-nodes 20 --skip-voi --n-jobs 8 --out results_sweep_lam000
+lambda=0.0: n=24 median=+0.00000 mean=+0.00632 frac>0.02=0.125
+
+=== lambda=0.2 ===
+python run_experiment.py --dataset willems --pilot --willems-file "data\chain_data.xlsx" --lam 0.2 --chains 7,9,11,14,17,18,19,21 --overlay-seeds 3 --seeds-per-net 8 --min-nodes 20 --skip-voi --n-jobs 8 --out results_sweep_lam020
+lambda=0.2: n=24 median=+0.00000 mean=+0.00201 frac>0.02=0.042
+lambda=0.4: n=24 median=+0.00000 mean=+0.00274 frac>0.02=0.042
+
+=== lambda=0.6 ===
+python run_experiment.py --dataset willems --pilot --willems-file "data\chain_data.xlsx" --lam 0.6 --chains 7,9,11,14,17,18,19,21 --overlay-seeds 3 --seeds-per-net 8 --min-nodes 20 --skip-voi --n-jobs 8 --out results_sweep_lam060
+lambda=0.6: n=24 median=+0.00076 mean=+0.00466 frac>0.02=0.042
+
+=== lambda=0.8 ===
+python run_experiment.py --dataset willems --pilot --willems-file "data\chain_data.xlsx" --lam 0.8 --chains 7,9,11,14,17,18,19,21 --overlay-seeds 3 --seeds-per-net 8 --min-nodes 20 --skip-voi --n-jobs 8 --out results_sweep_lam080
+lambda=0.8: n=24 median=+0.00011 mean=+0.00449 frac>0.02=0.042
+
+=== lambda=1.0 ===
+python run_experiment.py --dataset willems --pilot --willems-file "data\chain_data.xlsx" --lam 1.0 --chains 7,9,11,14,17,18,19,21 --overlay-seeds 3 --seeds-per-net 8 --min-nodes 20 --skip-voi --n-jobs 8 --out results_sweep_lam100
+lambda=1.0: n=24 median=+0.00000 mean=+0.00312 frac>0.02=0.042
+
+Spearman(lambda, median ceiling) = +0.372  p=0.4679
+Spearman(lambda, mean ceiling) = -0.086  p=0.8717
+Spearman(lambda, fraction above 0.02) = -0.655  p=0.1583
+wrote fig6_lambda_curve.png and exp_D_lambda_sweep.csv

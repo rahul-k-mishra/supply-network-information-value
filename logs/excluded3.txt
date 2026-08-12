@@ -1,0 +1,16 @@
+[asdr2 runner r9 | lambda-latent-attributes | pilot gates]
+  chain 01: stages=   8 links=  10 matched=  10 sinks= 3 focal=__market__(3 sinks)  cls=Market       cone=   9 -> SKIPPED (cone 9 < min_nodes 30)
+  chain 02: stages=  13 links=  13 matched=  13 sinks= 4 focal=__market__(4 sinks)  cls=Market       cone=  14 -> SKIPPED (cone 14 < min_nodes 30)
+  chain 03: stages=  17 links=  18 matched=  18 sinks= 4 focal=__market__(4 sinks)  cls=Market       cone=  18 -> SKIPPED (cone 18 < min_nodes 30)
+  chain 04: stages=  22 links=  39 matched=  39 sinks= 9 focal=__market__(9 sinks)  cls=Market       cone=  23 -> SKIPPED (cone 23 < min_nodes 30)
+  chain 05: stages=  27 links=  31 matched=  31 sinks= 8 focal=__market__(8 sinks)  cls=Market       cone=  28 -> SKIPPED (cone 28 < min_nodes 30)
+  chain 06: stages=  28 links=  28 matched=  28 sinks=12 focal=__market__(12 sinks) cls=Market       cone=  29 -> SKIPPED (cone 29 < min_nodes 30)
+Traceback (most recent call last):
+  File "D:\Research\asdr_project\asdr2\run_experiment.py", line 374, in <module>
+    main()
+  File "D:\Research\asdr_project\asdr2\run_experiment.py", line 311, in main
+    nets += W.load_all_chains(args.willems_file, n_regions=cfg.sim.n_regions,
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Research\asdr_project\asdr2\data_willems.py", line 117, in load_all_chains
+    raise RuntimeError(
+RuntimeError: All selected chains were skipped (see per-chain report above). Largest cone among them: 29 nodes. Most likely the chains you selected are below --min-nodes; lower it (e.g. --min-nodes 8) or pick larger chain ids.

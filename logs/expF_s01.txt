@@ -1,0 +1,23 @@
+instances                 : 2000  (seed 20260812)
+--- P-F1: identity gate ---
+max |residual|            : 2.776e-17   (must be < 1e-12)
+--- gaps ---
+mean eps_pi               : 0.00247
+mean eps_theta            : 0.00181
+P(eps_theta < eps_pi)     : 0.237
+--- P-F2: direction of H vs EVPI ---
+mean EVPI                 : 0.04336
+mean H                    : 0.04402
+median (H - EVPI)         : +0.00000
+P(H >= EVPI)              : 0.639
+P(H = EVPI exactly)       : 0.481
+5th/95th pct of H - EVPI  : -0.00798 / +0.01464
+--- P-F3: does H rank like EVPI ---
+Spearman(H, EVPI)         : +0.9729  p=0.00e+00
+--- by number of categories ---
+     n     evpi        H     diff   eps_pi  eps_theta
+K                                                    
+2  671  0.03290  0.03391  0.00000  0.00195    0.00095
+3  672  0.04678  0.04776  0.00000  0.00299    0.00201
+4  657  0.05055  0.05052 -0.00037  0.00246    0.00249
+wrote exp_F_planner_gaps.csv

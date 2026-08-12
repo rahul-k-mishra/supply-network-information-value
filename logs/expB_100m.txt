@@ -1,0 +1,12 @@
+
+lambda=0: n=96
+  median ceiling +0.00000 -> break-even price 0
+  90th pct       +0.00423 -> 423,451
+  maximum        +0.02115 -> 2,115,385
+
+lambda=0.8: n=42
+  median ceiling +0.00039 -> break-even price 39,140
+  90th pct       +0.00811 -> 810,591
+  maximum        +0.09150 -> 9,149,639
+
+wrote fig5_breakeven.png and exp_B_breakeven.csv

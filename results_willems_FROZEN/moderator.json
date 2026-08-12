@@ -1,0 +1,487 @@
+{
+  "spearman_rho": 0.008935820185970523,
+  "p": 0.9311423951805008,
+  "n": 96,
+  "per_network": [
+    {
+      "network": "willems_chain07_seed0",
+      "advantage": 0.0,
+      "chokepoints": 6
+    },
+    {
+      "network": "willems_chain08_seed0",
+      "advantage": 0.0,
+      "chokepoints": 10
+    },
+    {
+      "network": "willems_chain09_seed0",
+      "advantage": 0.025240384615384602,
+      "chokepoints": 3
+    },
+    {
+      "network": "willems_chain10_seed0",
+      "advantage": 0.0,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain11_seed0",
+      "advantage": 0.0,
+      "chokepoints": 24
+    },
+    {
+      "network": "willems_chain12_seed0",
+      "advantage": 0.0009803921568627473,
+      "chokepoints": 7
+    },
+    {
+      "network": "willems_chain13_seed0",
+      "advantage": 0.0031250000000000015,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain14_seed0",
+      "advantage": -0.00047348484848484253,
+      "chokepoints": 50
+    },
+    {
+      "network": "willems_chain15_seed0",
+      "advantage": -0.0005580357142857123,
+      "chokepoints": 56
+    },
+    {
+      "network": "willems_chain16_seed0",
+      "advantage": 0.0,
+      "chokepoints": 36
+    },
+    {
+      "network": "willems_chain17_seed0",
+      "advantage": 6.377551020408101e-05,
+      "chokepoints": 37
+    },
+    {
+      "network": "willems_chain18_seed0",
+      "advantage": 1.3877787807814458e-18,
+      "chokepoints": 72
+    },
+    {
+      "network": "willems_chain19_seed0",
+      "advantage": 0.0037500000000000033,
+      "chokepoints": 5
+    },
+    {
+      "network": "willems_chain20_seed0",
+      "advantage": 0.0,
+      "chokepoints": 2
+    },
+    {
+      "network": "willems_chain21_seed0",
+      "advantage": -0.002757352941176461,
+      "chokepoints": 66
+    },
+    {
+      "network": "willems_chain22_seed0",
+      "advantage": 0.0002540650406504141,
+      "chokepoints": 130
+    },
+    {
+      "network": "willems_chain23_seed0",
+      "advantage": -0.0012499999999999983,
+      "chokepoints": 7
+    },
+    {
+      "network": "willems_chain24_seed0",
+      "advantage": 0.00014880952380952884,
+      "chokepoints": 52
+    },
+    {
+      "network": "willems_chain25_seed0",
+      "advantage": 3.61271676300623e-05,
+      "chokepoints": 143
+    },
+    {
+      "network": "willems_chain26_seed0",
+      "advantage": 0.0,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain27_seed0",
+      "advantage": 0.0,
+      "chokepoints": 12
+    },
+    {
+      "network": "willems_chain28_seed0",
+      "advantage": 0.0004166666666666652,
+      "chokepoints": 43
+    },
+    {
+      "network": "willems_chain29_seed0",
+      "advantage": 0.001797945205479451,
+      "chokepoints": 124
+    },
+    {
+      "network": "willems_chain30_seed0",
+      "advantage": -0.0002840909090909005,
+      "chokepoints": 391
+    },
+    {
+      "network": "willems_chain31_seed0",
+      "advantage": 0.0008442982456140502,
+      "chokepoints": 60
+    },
+    {
+      "network": "willems_chain32_seed0",
+      "advantage": -0.0002252252252252257,
+      "chokepoints": 212
+    },
+    {
+      "network": "willems_chain33_seed0",
+      "advantage": 1.8825301204816734e-05,
+      "chokepoints": 481
+    },
+    {
+      "network": "willems_chain34_seed0",
+      "advantage": 0.004245283018867924,
+      "chokepoints": 5
+    },
+    {
+      "network": "willems_chain35_seed0",
+      "advantage": 0.0,
+      "chokepoints": 62
+    },
+    {
+      "network": "willems_chain36_seed0",
+      "advantage": 1.86011904761918e-05,
+      "chokepoints": 607
+    },
+    {
+      "network": "willems_chain37_seed0",
+      "advantage": 0.00013416815742396947,
+      "chokepoints": 646
+    },
+    {
+      "network": "willems_chain38_seed0",
+      "advantage": 0.00011180679785330605,
+      "chokepoints": 646
+    },
+    {
+      "network": "willems_chain07_seed1",
+      "advantage": 0.0,
+      "chokepoints": 6
+    },
+    {
+      "network": "willems_chain08_seed1",
+      "advantage": 0.0,
+      "chokepoints": 10
+    },
+    {
+      "network": "willems_chain09_seed1",
+      "advantage": 0.013461538461538464,
+      "chokepoints": 3
+    },
+    {
+      "network": "willems_chain10_seed1",
+      "advantage": 0.0,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain11_seed1",
+      "advantage": 0.0,
+      "chokepoints": 24
+    },
+    {
+      "network": "willems_chain12_seed1",
+      "advantage": 0.004534313725490199,
+      "chokepoints": 7
+    },
+    {
+      "network": "willems_chain13_seed1",
+      "advantage": 0.0012499999999999998,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain14_seed1",
+      "advantage": 0.0005681818181818177,
+      "chokepoints": 50
+    },
+    {
+      "network": "willems_chain15_seed1",
+      "advantage": -0.0003348214285714329,
+      "chokepoints": 56
+    },
+    {
+      "network": "willems_chain16_seed1",
+      "advantage": 0.0,
+      "chokepoints": 36
+    },
+    {
+      "network": "willems_chain17_seed1",
+      "advantage": 0.0005739795918367263,
+      "chokepoints": 37
+    },
+    {
+      "network": "willems_chain18_seed1",
+      "advantage": 0.000446428571428574,
+      "chokepoints": 72
+    },
+    {
+      "network": "willems_chain19_seed1",
+      "advantage": 0.0004166666666666659,
+      "chokepoints": 5
+    },
+    {
+      "network": "willems_chain20_seed1",
+      "advantage": 0.0,
+      "chokepoints": 2
+    },
+    {
+      "network": "willems_chain21_seed1",
+      "advantage": 0.01654411764705882,
+      "chokepoints": 66
+    },
+    {
+      "network": "willems_chain22_seed1",
+      "advantage": 0.0,
+      "chokepoints": 130
+    },
+    {
+      "network": "willems_chain23_seed1",
+      "advantage": -0.002000000000000001,
+      "chokepoints": 7
+    },
+    {
+      "network": "willems_chain24_seed1",
+      "advantage": -0.002976190476190477,
+      "chokepoints": 52
+    },
+    {
+      "network": "willems_chain25_seed1",
+      "advantage": 0.0,
+      "chokepoints": 143
+    },
+    {
+      "network": "willems_chain26_seed1",
+      "advantage": 0.0,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain27_seed1",
+      "advantage": 0.0,
+      "chokepoints": 12
+    },
+    {
+      "network": "willems_chain28_seed1",
+      "advantage": -0.00041666666666666794,
+      "chokepoints": 43
+    },
+    {
+      "network": "willems_chain29_seed1",
+      "advantage": -0.0010958904109588997,
+      "chokepoints": 124
+    },
+    {
+      "network": "willems_chain30_seed1",
+      "advantage": 0.0002272727272727343,
+      "chokepoints": 391
+    },
+    {
+      "network": "willems_chain31_seed1",
+      "advantage": 0.0006798245614035109,
+      "chokepoints": 60
+    },
+    {
+      "network": "willems_chain32_seed1",
+      "advantage": -0.0007601351351351371,
+      "chokepoints": 212
+    },
+    {
+      "network": "willems_chain33_seed1",
+      "advantage": 9.412650602410033e-05,
+      "chokepoints": 481
+    },
+    {
+      "network": "willems_chain34_seed1",
+      "advantage": -0.000943396226415097,
+      "chokepoints": 5
+    },
+    {
+      "network": "willems_chain35_seed1",
+      "advantage": 0.0,
+      "chokepoints": 62
+    },
+    {
+      "network": "willems_chain36_seed1",
+      "advantage": 0.0,
+      "chokepoints": 607
+    },
+    {
+      "network": "willems_chain37_seed1",
+      "advantage": 0.00043604651162790773,
+      "chokepoints": 646
+    },
+    {
+      "network": "willems_chain38_seed1",
+      "advantage": -0.0002571556350626003,
+      "chokepoints": 646
+    },
+    {
+      "network": "willems_chain07_seed2",
+      "advantage": 0.0,
+      "chokepoints": 6
+    },
+    {
+      "network": "willems_chain08_seed2",
+      "advantage": 0.0,
+      "chokepoints": 10
+    },
+    {
+      "network": "willems_chain09_seed2",
+      "advantage": -0.008413461538461533,
+      "chokepoints": 3
+    },
+    {
+      "network": "willems_chain10_seed2",
+      "advantage": 0.0,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain11_seed2",
+      "advantage": 0.0006944444444444448,
+      "chokepoints": 24
+    },
+    {
+      "network": "willems_chain12_seed2",
+      "advantage": 0.00024509803921569093,
+      "chokepoints": 7
+    },
+    {
+      "network": "willems_chain13_seed2",
+      "advantage": 0.0,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain14_seed2",
+      "advantage": -0.0005681818181818232,
+      "chokepoints": 50
+    },
+    {
+      "network": "willems_chain15_seed2",
+      "advantage": 0.0003348214285714274,
+      "chokepoints": 56
+    },
+    {
+      "network": "willems_chain16_seed2",
+      "advantage": 0.0,
+      "chokepoints": 36
+    },
+    {
+      "network": "willems_chain17_seed2",
+      "advantage": -0.001849489795918363,
+      "chokepoints": 37
+    },
+    {
+      "network": "willems_chain18_seed2",
+      "advantage": -0.0026785714285714286,
+      "chokepoints": 72
+    },
+    {
+      "network": "willems_chain19_seed2",
+      "advantage": 0.0025000000000000035,
+      "chokepoints": 5
+    },
+    {
+      "network": "willems_chain20_seed2",
+      "advantage": 0.0,
+      "chokepoints": 2
+    },
+    {
+      "network": "willems_chain21_seed2",
+      "advantage": 0.0033088235294117625,
+      "chokepoints": 66
+    },
+    {
+      "network": "willems_chain22_seed2",
+      "advantage": 0.0004573170731707321,
+      "chokepoints": 130
+    },
+    {
+      "network": "willems_chain23_seed2",
+      "advantage": 0.0,
+      "chokepoints": 7
+    },
+    {
+      "network": "willems_chain24_seed2",
+      "advantage": -0.0016369047619047533,
+      "chokepoints": 52
+    },
+    {
+      "network": "willems_chain25_seed2",
+      "advantage": 0.000108381502890173,
+      "chokepoints": 143
+    },
+    {
+      "network": "willems_chain26_seed2",
+      "advantage": 0.0,
+      "chokepoints": 0
+    },
+    {
+      "network": "willems_chain27_seed2",
+      "advantage": 0.0,
+      "chokepoints": 12
+    },
+    {
+      "network": "willems_chain28_seed2",
+      "advantage": -0.0033333333333333314,
+      "chokepoints": 43
+    },
+    {
+      "network": "willems_chain29_seed2",
+      "advantage": 0.0014897260273972757,
+      "chokepoints": 124
+    },
+    {
+      "network": "willems_chain30_seed2",
+      "advantage": 0.0008806818181817944,
+      "chokepoints": 391
+    },
+    {
+      "network": "willems_chain31_seed2",
+      "advantage": 0.0007785087719298145,
+      "chokepoints": 60
+    },
+    {
+      "network": "willems_chain32_seed2",
+      "advantage": 8.44594594594461e-05,
+      "chokepoints": 212
+    },
+    {
+      "network": "willems_chain33_seed2",
+      "advantage": -0.00016942771084337837,
+      "chokepoints": 481
+    },
+    {
+      "network": "willems_chain34_seed2",
+      "advantage": -0.0008254716981132102,
+      "chokepoints": 5
+    },
+    {
+      "network": "willems_chain35_seed2",
+      "advantage": 0.0,
+      "chokepoints": 62
+    },
+    {
+      "network": "willems_chain36_seed2",
+      "advantage": 0.0,
+      "chokepoints": 607
+    },
+    {
+      "network": "willems_chain37_seed2",
+      "advantage": -7.826475849731785e-05,
+      "chokepoints": 646
+    },
+    {
+      "network": "willems_chain38_seed2",
+      "advantage": 0.00027951699463326654,
+      "chokepoints": 646
+    }
+  ]
+}

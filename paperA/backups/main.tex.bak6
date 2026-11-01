@@ -1,0 +1,2277 @@
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage[title]{appendix}
+\usepackage{booktabs}
+
+\theoremstyle{thmstyleone}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{thmstyletwo}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+
+\theoremstyle{thmstylethree}
+\newtheorem{definition}{Definition}
+
+\newcommand{\evpi}{\mathrm{EVPI}}
+\newcommand{\evppi}{\mathrm{EVPPI}}
+\newcommand{\cvar}{\mathrm{CVaR}}
+\newcommand{\siss}{\mathrm{SISS}}
+\newcommand{\ubound}{U}
+
+\raggedbottom
+
+\begin{document}
+
+\title[Decision Value of Hidden Supply-Network Structure]{The Decision Value
+of Hidden Supply-Network Structure: Zero-Value Conditions and
+Identification-Premium Bounds}
+
+\author*[1]{\fnm{Rahul Kumar} \sur{Mishra}}\email{mishra.rahul98@gmail.com}
+
+\affil*[1]{\orgname{Independent Researcher}, \orgaddress{\city{Ranchi},
+\state{Jharkhand}, \country{India}}}
+
+\abstract{Firms invest in sub-tier supply-network visibility through
+mapping, supplier questionnaires and audits, and a substantial literature
+studies how hidden supplier structure can be inferred. We study a prior
+question: what is that structure worth to a specific mitigation decision? We
+formulate discovery-coupled mitigation as a probe-then-secure problem, with
+no probe cost priced here, on a
+partially observed supply directed acyclic graph and analyse the expected
+value of perfect structural information (EVPI). We give sufficient
+structural conditions, namely invariance of the loss distribution under
+identification-free plans together with uniform plan-level dominance of
+identification-free actions, under which EVPI is exactly zero; since
+perfect information dominates any acquisition policy, every feasible
+information-acquisition policy then has zero decision value within the
+modelled problem. The conditions are stated for any monotone law-invariant
+objective, so they cover expected loss and conditional value at risk alike.
+Outside that regime we bound EVPI above by a sum of per-category
+identification premiums computable from prior and public data, prove the
+bound for node-disjoint categories, and give the premium exactly in a dilution
+special case, together with a sub-case of it in which the bound is attained. A sufficient condition for the harder of the two
+hypotheses is read off the graph and the cost vector, and we report how often
+it holds on real topologies. An empirical study on 32 benchmark multi-echelon
+topologies derived from the Willems dataset, with model-generated latent
+overlays, measures the advantage that perfect structural information confers
+on an implemented planner. That advantage is small under the loss
+normalisation used here, with a median of exactly zero in the
+public-attribute regime, and a census of the same chains finds that
+$88.9\%$ of their categories have a single possible supplier, which bounds
+how much there was to find. We
+give the exact relationship between the measured quantity and EVPI and do not
+claim it bounds EVPI from either side.}
+
+\keywords{value of information, EVPI, supply network visibility, disruption
+risk, conditional value at risk, endogenous uncertainty}
+
+\maketitle
+
+\section{Introduction}\label{sec:intro}
+
+Sub-tier supply-network visibility is bought through mapping services,
+supplier questionnaires, audit programmes and related discovery activities.
+The case for such spending is usually argued from the operational
+consequences of incomplete visibility. It is much
+less common to price the information itself: to ask by how much a firm's
+mitigation decisions would improve if the hidden structure were supplied at
+no cost.
+
+Decision analysis answers that question with the expected value of perfect
+information, which bounds the improvement obtainable from any amount of
+investigation. Applying it to supply-network structure is easy to state and
+harder to use, because the decision the information feeds --- which
+suppliers to qualify a backup for, under a cost budget, on a network whose
+upstream shape is the unknown --- is combinatorial.
+
+We formulate this problem as a decision model of discovery-coupled
+mitigation and characterise its information value. One point of scope should
+be clear from the outset: we price the information, not the coupling. No
+probe cost and no shared probe-and-mitigation budget enters any quantity
+reported here, since the uninformed planner acts on the prior and the
+informed planner is handed $\theta$ outright. The first result is
+negative and, in our view, the more useful one: there are structural
+conditions under which the value of perfect structural information is exactly
+zero. Both can be examined before any structural discovery is commissioned: the
+first, a symmetry of the public network that exchanges the candidates of each
+category together with their consumers, upstream subtrees and correlation
+clusters, directly from public data, and the second through a sufficient condition on the graph
+and the cost vector. The result is independent of
+the optimisation algorithm used to implement the decision: under those
+conditions no information-acquisition policy can improve the objective,
+because perfect information dominates every such policy and is itself worth
+nothing. The second result is a bound for the cases where those conditions
+fail, expressed as a sum of per-category identification premiums, each
+computable from information the firm already holds.
+
+\paragraph{Central claim.} We characterise sufficient structural conditions
+under which the decision value of hidden supplier information is exactly
+zero, and derive a computable upper bound on that value outside the
+zero-value regime. Everything else in the paper supports that claim: the
+screening score is secondary, the enumeration experiments are verification,
+the CVaR statement is an extension, and the shared-subtree case is an
+unresolved extension we label as such.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item \emph{Zero-value characterisation.} Theorem~\ref{thm:zero} gives
+sufficient conditions for $\evpi=0$, and Lemma~\ref{lem:garbling} transfers
+the conclusion to every information-acquisition policy.
+Proposition~\ref{prop:witness} gives a sufficient condition for the harder of
+the two hypotheses that is read off the public graph and cost vector, and
+Section~\ref{sec:lam0} reports how often it holds on the benchmark
+collection.
+Corollary~\ref{cor:lawinv} extends the statement to monotone law-invariant
+objectives, covering conditional value at risk.
+\item \emph{Identification-premium upper bound.} Theorem~\ref{thm:premium}
+bounds EVPI by a finite, directly computable sum of per-category premiums
+for node-disjoint categories, and Corollary~\ref{cor:evppi} bounds the
+partial value of each category separately. Computable EVPI bounds are not new
+(Section~\ref{sec:related}, stream A$'$). What we believe to be new, and have
+not found stated elsewhere, is a bound of this form: it requires no convexity,
+decomposes over a discrete latent assignment, and is localised to individual
+channels so that they can be screened separately.
+Further, Corollary~\ref{cor:dilution} gives the exact
+premium in a dilution special case, and we identify a sub-case of it in
+which the bound is attained with equality; and
+Proposition~\ref{prop:disp} gives the premium in closed form under a
+specified dispersion family, identifying a threshold below which dispersion
+does not enter the bound at all.
+\item \emph{Computational verification.} Exhaustive enumeration of exact
+miniature instances tests the implementation of the definitions and searches
+for violations that would reveal errors in the stated results
+(Section~\ref{sec:verify}).
+\item \emph{Empirical characterisation.} Measurements on benchmark
+multi-echelon topologies and a synthetic family, across a public-attribute
+and a latent-attribute regime (Section~\ref{sec:measure}).
+\end{enumerate}
+
+\noindent Section~\ref{sec:limits} states what the paper does not establish.
+
+\section{Related work and positioning}\label{sec:related}
+
+\paragraph{(A) Value of information.} The expected value of perfect
+information originates with Raiffa and Schlaifer~\cite{raiffa1961} and
+Howard~\cite{howard1966}. Its partial form, EVPPI, is standard in health
+economics, where the computational cost of nested estimation is a recognised
+difficulty~\cite{strong2014,heath2024}. Our premium is an EVPPI-shaped
+quantity for structural parameters of a network, evaluated by finite
+enumeration over budget breakpoints rather than by nested simulation. We
+claim no priority over that literature, whose machinery we reuse.
+
+\paragraph{(A$'$) Bounding EVPI when it cannot be computed.} We must be
+explicit that a computable upper bound on EVPI is not a new idea. Because
+exact evaluation is often prohibitive, bounds have been derived since
+Madansky~\cite{madansky1960}, and Avriel and Williams~\cite{avriel1970}
+obtained EVPI bounds evaluable as part of a post-optimal analysis of a linear
+or convex program. Ziemba and Butterworth~\cite{ziemba1975} and Hausch and
+Ziemba~\cite{hausch1983} devote a two-part study to bounding the value of
+information directly; Huang, Vertinsky and Ziemba~\cite{huang1977} sharpen
+the perfect-information bounds for simple-recourse problems; and
+Birge~\cite{birge1982} develops the companion bounds for the value of the
+stochastic solution. That family of
+bounds rests on convexity or concavity: Huang, Vertinsky and Ziemba state
+theirs for simple-recourse problems with nonlinear return functions and
+concave utility functions, using extensions of the Jensen and
+Edmundson--Madansky inequalities. Theorem~\ref{thm:premium} uses no
+convexity and no continuity: it is a combinatorial decomposition over a
+discrete latent assignment, evaluated on a finite set of budget breakpoints,
+and it localises the bound to individual categories so that channels can be
+screened separately. Our contribution is that specific form and its use for
+screening, not the general idea of bounding EVPI, and where the two apply to
+the same problem we make no claim that ours is tighter.
+
+\paragraph{(B) Information acquisition and active learning.} Adaptive
+information gathering with performance guarantees is well
+developed~\cite{golovin2011}, and decision-coupled acquisition, which drives
+uncertainty into a single decision region instead of reducing it uniformly,
+is the closest precedent for the objective used here~\cite{javdani2014}. The ordering of information structures by their
+decision value is Blackwell's~\cite{blackwell1953}, and
+Lemma~\ref{lem:garbling} is a standard consequence of it rather than a
+contribution of this paper. That literature asks how to acquire information
+efficiently. We ask when acquisition cannot help at all, which is logically
+prior and is not settled by any performance guarantee.
+
+\paragraph{(C) Decision-dependent information discovery.} Stochastic
+programming with endogenous uncertainty studies problems in which decisions
+determine what is revealed~\cite{jonsbraten1998,goel2006}, and the robust
+counterpart optimises under decision-dependent
+revelation~\cite{vayanos2025}. Artstein and Wets~\cite{artstein1993} and
+Artstein~\cite{artstein1994,artstein1999} treat the information structure
+itself as a decision variable through the notion of sensors;
+Artstein~\cite{artstein1994} recasts a two-stage problem with a probing
+decision as a three-stage stochastic program and establishes a strong law of
+large numbers for it, and Artstein~\cite{artstein1999} addresses the
+trade-off between the gain from new information and the cost of obtaining
+it. Closest to our setting is the probing-enhanced
+stochastic program of Ma et al.~\cite{ma2024}, in which costly discrete
+probes are chosen before a two-stage decision and the perfect-information
+bound is the benchmark to be improved upon; their contribution is
+algorithmic, a branch-and-bound scheme over probing sets. The direction of the question differs: that stream computes policies
+\emph{under} revelation, while we characterise conditions in which revelation
+changes nothing, so that the
+problem those methods solve has a degenerate answer.
+
+\paragraph{(D) Valuation of supply-chain visibility.} It would be wrong to
+claim that visibility has not been valued. Caridi et al.~\cite{caridi2014}
+develop a structured value-assessment model for visibility and apply it to a
+real chain, and recent student and practitioner work continues to estimate
+returns to deeper tiers~\cite{cermeno2026}. That work maps visibility improvements to
+operational and strategic benefits, typically through causal models of
+performance indicators. Our question is narrower and its answer sharper: for
+a specified mitigation decision and a specified loss, when is the decision
+value of latent structure exactly zero, and when it is not, what upper bound
+can be computed in advance. Neither statement subsumes the other.
+
+\paragraph{(E) Multi-tier structure and hidden links.} Inference of hidden
+supplier relationships is an active area~\cite{brintrup2018,kosasih2022},
+and topological measures of network vulnerability are well
+established~\cite{wagner2010,simchi2015}. These methods find or score
+structure; they do not price it against a decision.
+
+\paragraph{(F) Disruption mitigation.} Mitigation and contingency strategy
+follows Tomlin~\cite{tomlin2006}, with the wider OR/MS literature surveyed
+by Snyder et al.~\cite{snyder2016}. Our mitigation model --- budgeted backup
+qualification under a conjunctive cascade --- is deliberately simple, since
+the object of study is the information rather than the mitigation policy.
+
+\paragraph{(G) Risk measures.} The tail machinery is that of Rockafellar and
+Uryasev~\cite{rockafellar2000} and Artzner et al.~\cite{artzner1999}.
+
+Table~\ref{tab:novelty} summarises where this paper sits against these
+streams. The column that separates it is the third.
+
+\begin{table}[ht]
+\caption{Positioning against adjacent streams. The column that separates
+this paper is the sufficient zero-value condition; computable EVPI bounds
+already exist (stream A$'$), and our claim there concerns the form of the
+bound rather than its existence. The zero-value column records what we found
+in the works we examined, not an exhaustive claim about each
+stream.}\label{tab:novelty}
+\small
+\begin{tabular}{@{}p{3.7cm}cccp{1.8cm}c@{}}
+\toprule
+& values & gives a & gives an & bound is & applied to \\
+stream & latent & zero-value & EVPI & convexity- & supply \\
+& structure & condition & bound & free & networks \\
+\midrule
+Value of information (A) & yes & no & no & n/a & no \\
+EVPI bounding (A$'$) & no & no & yes & not in those examined & no \\
+Active acquisition (B) & yes & no & no & n/a & no \\
+Decision-dependent discovery (C) & yes & no & no & n/a & no \\
+Visibility valuation (D) & yes & no & no & n/a & yes \\
+Hidden-link inference (E) & no & no & no & n/a & yes \\
+This paper & yes & yes & yes & yes & yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Model}\label{sec:model}
+
+\paragraph{Network.} A finite directed acyclic graph $G=(V,E)$, where
+$u\to v$ means $u$ supplies $v$. A focal node $0$ consumes $K_0$ input
+categories. Every node $v$ consumes categories $k\in K_v$, each served by a
+set of suppliers. Service is conjunctive across categories and substitutable
+within a category, in the sense that any one working supplier suffices. That
+clause fixes the semantics of the cascade rather than the sourcing structure.
+The candidate set is epistemic rather than a redundancy: exactly one candidate
+actually supplies the category, and the set records who it might be. The
+model therefore contains no concurrently multi-sourced category, and dual
+sourcing as a mitigation lies outside it. Each node has a publicly known securing cost $c_v$ and
+belongs to a publicly known correlation cluster. A node's \emph{tier} is its
+distance from the focal node along the supply direction: the focal firm's
+direct suppliers are tier one, their suppliers tier two, and so on.
+
+\paragraph{Uncertainty.} The structure parameter $\theta$ specifies, for
+each latent category $(v,k)$, which candidate in a finite set $C_{v,k}$ is
+the true supplier, exactly one candidate serving the category, an assumption
+Corollary~\ref{cor:dilution} and Proposition~\ref{prop:disp} use and, in the dispersed regime of
+Section~\ref{sec:measure}, which candidate carries which risk attribute. A
+prior $\pi$ over $\theta$ is given. Probing a node reveals its candidate
+in-edges through a noisy asymmetric channel. That channel belongs to the
+wider model, of which this paper studies only the value of the information a
+probe could deliver; it enters neither $\evpi$ nor the quantity measured in
+Section~\ref{sec:measure}, since the uninformed planner sees only the prior
+and the informed planner sees $\theta$ outright.
+
+\paragraph{Disruption and loss.} A scenario $\omega$ draws node-level
+failures, correlated within clusters by a one-factor Gaussian copula.
+Operability propagates through the conjunctive cascade. A plan
+$S\subseteq V\setminus\{0\}$ with $c(S)\le B$ qualifies backup sources:
+$u\in S$ guarantees $u$'s output to its consumers. The focal loss is the
+fraction of focal categories starved,
+\begin{equation}
+L(S;\theta,\omega)=\frac{1}{K_0}\sum_{k=1}^{K_0} Z_k,
+\qquad Z_k=\mathbf{1}\{\text{focal category }k\text{ starved}\}.
+\label{eq:loss}
+\end{equation}
+
+\paragraph{Objectives and the exact target.} Write
+$j(S;\theta)=\mathbb{E}_\omega L(S;\theta,\omega)$ and
+$J(S;\theta)=\cvar_{\alpha,\omega}(L(S;\theta,\omega))$. Let $S_\pi$
+minimise $\mathbb{E}_{\theta\sim\pi}j(S;\theta)$ and $S_\theta$ minimise
+$j(S;\theta)$. Then
+\begin{equation}
+\evpi(\pi)=\mathbb{E}_\pi\!\left[j(S_\pi;\theta)\right]
+-\mathbb{E}_\pi\!\left[j(S_\theta;\theta)\right]\;\ge\;0 .
+\label{eq:evpi}
+\end{equation}
+
+\paragraph{Units.} $L$ is a fraction of focal categories, so every quantity
+here is dimensionless. Because $L$ is normalised by $K_0$, and $K_0$ runs from $2$ to $672$ across
+the retained chains, the same absolute value means very different things on
+different chains: rescuing one focal category moves the objective by
+$1/K_0$, which is $0.019$ at the median $K_0=52$ and $0.0015$ at $K_0=672$.
+An advantage of $0.0011$ on a chain at the median $K_0$ would thus be about a
+twentieth of one focal category. That is an illustration at one value of
+$K_0$, not the measurement. The measurement is the scaled quantity
+$H\cdot K_0$, which says directly how many focal categories
+perfect structural knowledge rescues: across the benchmark instances it
+averages $0.020$ at $\lambda=0$, with a median of exactly zero and a maximum
+of $1.012$, and $0.146$ at $\lambda=0.8$, with a median of $0.018$ and a
+maximum of $2.379$. Perfect knowledge therefore rescues on average a fiftieth
+of one focal category in the public-attribute regime and about a seventh of
+one in the latent-attribute regime, and at most $1.01$ and $2.38$
+respectively. The illustration and the measurement differ by about a factor of
+three at $\lambda=0$ because $H$ is smaller on the chains with large $K_0$;
+Section~\ref{sec:open} reports how the scaled quantity varies with $K_0$. A value of
+$0.005$ means that perfect structural knowledge would reduce the objective by
+half a percentage point of the focal basket: expected category starvation where the objective is $j$, and the
+conditional tail average of the starved fraction where it is $J$, as it is in
+the measurements of Section~\ref{sec:measure}. Whether that is a large amount of money depends
+on what one starved category costs the firm, which this model does not
+represent; Section~\ref{sec:money} gives the conversion a reader needs to
+price it for a specific firm.
+
+\subsection{Three quantities that must not be conflated}
+\label{sec:threequantities}
+
+The empirical sections do not measure \eqref{eq:evpi}. A firm operates an
+implemented planner rather than an exact optimiser, and so do we. Let
+$\hat S_\pi$ and $\hat S_\theta$ be the plans returned by the implemented
+planner given the prior and given $\theta$. Define the \emph{heuristic
+oracle advantage}
+\begin{equation}
+H \;=\; \mathbb{E}_\pi\!\left[j(\hat S_\pi;\theta)\right]
+      -\mathbb{E}_\pi\!\left[j(\hat S_\theta;\theta)\right].
+\label{eq:H}
+\end{equation}
+
+\begin{proposition}[Exact relation between $H$ and EVPI]\label{prop:H}
+Let $\varepsilon_\pi=\mathbb{E}_\pi[j(\hat S_\pi;\theta)]
+-\mathbb{E}_\pi[j(S_\pi;\theta)]\ge0$ and
+$\varepsilon_\theta=\mathbb{E}_\pi[j(\hat S_\theta;\theta)
+-j(S_\theta;\theta)]\ge0$ be the planner's optimality gaps in the two
+regimes. Then
+\begin{equation}
+H=\evpi(\pi)+\varepsilon_\pi-\varepsilon_\theta .
+\label{eq:Hrelation}
+\end{equation}
+Hence $H\le\evpi$ if and only if $\varepsilon_\pi\le\varepsilon_\theta$. In
+general the sign of $\varepsilon_\pi-\varepsilon_\theta$ is not determined,
+so $H$ is neither an upper nor a lower bound on EVPI; if the planner is
+$\theta$-optimal when given $\theta$, so that $\varepsilon_\theta=0$, then
+$H\ge\evpi$.
+\end{proposition}
+
+\begin{proof}
+(E1) By definition of $\varepsilon_\pi$,
+$\mathbb{E}[j(\hat S_\pi;\theta)]=\mathbb{E}[j(S_\pi;\theta)]
++\varepsilon_\pi$.
+
+\noindent(E2) By definition of $\varepsilon_\theta$,
+$\mathbb{E}[j(\hat S_\theta;\theta)]=\mathbb{E}[j(S_\theta;\theta)]
++\varepsilon_\theta$.
+
+\noindent(E3) Subtracting (E2) from (E1) and using \eqref{eq:evpi} gives
+\eqref{eq:Hrelation}. Both gaps are nonnegative because $S_\pi$ and
+$S_\theta$ minimise over the same feasible sets that the planner searches
+heuristically, and neither gap dominates the other in general, which gives
+the remaining statements.
+\end{proof}
+
+Proposition~\ref{prop:H} holds for any fixed objective, provided the same one
+is used in every term. We fix the convention now, because the paper uses two.
+The measurements of Section~\ref{sec:measure} take $J$, the CVaR objective,
+throughout: $H$, $\hat S_\pi$ and $\hat S_\theta$ there are CVaR quantities,
+and the $\evpi$ they relate to by \eqref{eq:Hrelation} is the CVaR value of
+perfect information, not \eqref{eq:evpi}. The enumeration of
+Section~\ref{sec:gaps} takes $j$, expected loss, so that its $\evpi$ is
+\eqref{eq:evpi} exactly. The premium bound $\ubound$ is stated for expected loss
+only and is never applied to a CVaR measurement anywhere in this paper.
+Given that convention, $H$ is a planner-specific measurement and is reported
+as such throughout.
+Section~\ref{sec:gaps} measures both gaps directly on instances where exact
+optimisation is possible, and reports how large the discrepancy actually is
+and how its sign behaves.
+Table~\ref{tab:quantities} fixes the vocabulary.
+
+\begin{table}[ht]
+\caption{The four quantities used in this paper.}\label{tab:quantities}
+\small
+\begin{tabular}{@{}p{2.3cm}p{4.1cm}p{1.9cm}p{3.1cm}@{}}
+\toprule
+quantity & definition & exact? & direction \\
+\midrule
+$\evpi$ & prior-optimal versus state-optimal plan, exact optimisation &
+exact & the target \\
+$\ubound=K_0^{-1}\sum_k I_k$ & sum of identification premiums,
+Thm.~\ref{thm:premium} & exact upper bound & $\evpi\le\ubound$ under the
+stated assumptions \\
+$H$ & same implemented planner with and without $\theta$ & approximate &
+$H=\evpi+\varepsilon_\pi-\varepsilon_\theta$; sign undetermined \\
+$\siss$ & screening score, App.~\ref{sec:index} & heuristic & no bound
+claimed outside Thm.~\ref{thm:premium} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Units of analysis}\label{sec:units}
+
+Several nested objects appear in the empirical section, so we fix them here.
+A \emph{network} is one benchmark topology. An \emph{overlay} is one seeded
+assignment of latent structure and risk attributes to a network. An
+\emph{instance} is a network--overlay pair and is the unit at which $H$ is
+computed. A \emph{channel} is one latent category at one node and is the
+unit at which premiums and screening scores are computed. A \emph{focal
+category} is one of the $K_0$ inputs the focal node consumes. Summary
+statistics of $H$ are computed at instance level; reliability is assessed at
+network level, because overlays of the same network are not independent
+replicates.
+
+\section{When structural information has zero value}\label{sec:zero}
+
+\begin{lemma}[Acquisition is dominated by perfect information]
+\label{lem:garbling}
+For any information-acquisition policy $\varphi$ with value
+$\mathrm{Val}(\varphi)$, $\mathrm{Val}(\varphi)\le\evpi(\pi)$.
+\end{lemma}
+
+\begin{proof}
+(L1) By definition,
+$\mathrm{Val}(\varphi)=\mathbb{E}_\pi[j(S_\pi;\theta)]
+-\mathbb{E}_o\mathbb{E}_{\theta\mid o}[j(S_{\pi_o};\theta)]$, where $o$ is
+the observation induced by $\varphi$, $\pi_o$ the posterior and $S_{\pi_o}$
+the plan chosen after $o$.
+
+\noindent(L2) Pointwise in $(o,\theta)$, $S_{\pi_o}$ is one feasible plan
+among others, so $j(S_{\pi_o};\theta)\ge\min_S j(S;\theta)
+=j(S_\theta;\theta)$.
+
+\noindent(L3) Taking $\mathbb{E}_{\theta\mid o}$ of (L2), then
+$\mathbb{E}_o$, and applying the tower property gives
+$\mathbb{E}_o\mathbb{E}_{\theta\mid o}[j(S_{\pi_o};\theta)]
+\ge\mathbb{E}_\theta[j(S_\theta;\theta)]$.
+
+\noindent(L4) Substituting (L3) into (L1) yields
+$\mathrm{Val}(\varphi)\le\evpi(\pi)$.
+\end{proof}
+
+\begin{proposition}[Bernoulli CVaR]\label{prop:bern}
+For $Z\in\{0,1\}$ with $\mathbb{P}(Z=1)=p$,
+$\cvar_\alpha(Z)=\min\{1,p/(1-\alpha)\}$, and
+$\cvar_\alpha(K_0^{-1}\sum_kZ_k)\le
+K_0^{-1}\sum_k\min\{1,p_k/(1-\alpha)\}$.
+\end{proposition}
+
+\begin{proof}
+(P1) If $p\ge1-\alpha$ the worst $(1-\alpha)$ tail consists of ones only, so
+the tail average is $1$.
+
+\noindent(P2) If $p<1-\alpha$ the tail contains all $p$ mass of ones and
+$(1-\alpha-p)$ of zeros, so its average is $p/(1-\alpha)$.
+
+\noindent(P3) Combining gives $\cvar_\alpha(Z)=\min\{1,p/(1-\alpha)\}$.
+
+\noindent(P4) CVaR is subadditive and positively
+homogeneous~\cite{artzner1999}, so
+$\cvar_\alpha(K_0^{-1}\sum_kZ_k)\le K_0^{-1}\sum_k\cvar_\alpha(Z_k)$, and
+(P3) gives the stated form.
+\end{proof}
+
+\begin{definition}[Identification-free actions]\label{def:free}
+An action is \emph{identification-free} for the latent category $(v,k)$ if
+the conditional law of the focal loss $L$, given a plan containing that
+action, does not depend on $\theta_{v,k}$. A plan is
+\emph{identification-free} if each of its elements is identification-free for
+the category it addresses. This is a condition on the plan's own elements
+only: it says nothing about the latent categories the plan leaves untouched,
+whose $\theta$-dependence is what (H1) below rules out.
+Canonical examples of identification-free actions:
+secure the consumer $v$;
+secure every candidate in $C_{v,k}$; and, under the sufficient condition
+(H1$'$) below, take no action, since every structure automorphism fixes the
+empty plan. Under heterogeneous latent candidate risk the last of these is not
+identification-free, and exchangeability of the candidates' marginal laws
+alone does not make it so, since the law of $L$ under inaction can depend on which
+candidate is the supplier. Securing one named
+candidate $u\in C_{v,k}$ is \emph{identification-dependent}, since its
+effect depends on whether $u$ is the supplier.
+\end{definition}
+
+We use two hypotheses.
+\begin{itemize}
+\item[(H1)] \emph{Loss-law invariance.} For every identification-free plan
+$S$, the law of $L(S;\theta,\cdot)$ is the same for all $\theta$. The
+hypothesis is not implied by Definition~\ref{def:free}: an
+identification-free plan constrains only the categories its own elements
+address, and (H1) is exactly the requirement that the categories it leaves
+alone contribute a law that does not vary with $\theta$. That is why the
+sufficient condition (H1$'$) below is stated over every latent category rather
+than over the plan's. The
+experimental construction of Section~\ref{sec:measure} makes candidates
+approximately exchangeable in marginal law at $\lambda=0$, which is not
+sufficient for (H1), and deliberately breaks even that at $\lambda=0.8$.
+\item[(H2)] \emph{Uniform plan-level dominance.} Every
+identification-dependent element $u$ of any plan admits an
+identification-free replacement $a(u)$ with $c(a(u))\le c(u)$ and
+$j(S\setminus\{u\}\cup\{a(u)\};\theta)\le j(S;\theta)$ for all $\theta$.
+Securing every candidate in the category is identification-free but cannot
+serve as $a(u)$ under positive costs: the replacement set contains $u$, so it
+is never cheaper. Only an action at the consumer level, or outside the
+category, can witness the cost clause.
+\end{itemize}
+
+\paragraph{A checkable sufficient condition for (H1).} Exchangeability of the
+candidates of each category in marginal operability law, in securing cost and
+under the prior is \emph{not} sufficient. Two candidates with the same failure
+law can differ in their other consumers, in their upstream subtrees or in their
+correlation cluster, and each of these differences can make the joint law of
+the starvation indicators, and with it the law of $L$, depend on which
+candidate is the supplier. Example~\ref{ex:marginal} in
+Appendix~\ref{app:H1} gives an instance in which the marginal condition holds,
+(H2) holds by Proposition~\ref{prop:witness}, and $\evpi>0$. What suffices is
+a symmetry of the public structure. Write $q_v$ for the marginal failure
+probability of node $v$ and $\kappa(v)$ for its cluster label. A
+\emph{structure automorphism} is a bijection $\sigma:V\to V$, together with
+bijections $\sigma_v:K_v\to K_{\sigma v}$ and a bijection $\eta$ of cluster
+labels, such that
+(A0) $\sigma(0)=0$;
+(A1) whenever $(v,k)$ has public supplier $s$, $(\sigma v,\sigma_vk)$ has
+public supplier $\sigma(s)$;
+(A2) $(v,k)$ is latent if and only if $(\sigma v,\sigma_vk)$ is, and then
+$C_{\sigma v,\sigma_vk}=\sigma(C_{v,k})$;
+(A3) $q_{\sigma v}=q_v$, $\kappa(\sigma v)=\eta(\kappa(v))$, and $\eta$
+preserves each cluster's copula parameter.
+Because $\sigma$ preserves every supply and candidate relation, it carries
+each node's upstream subtree and consumers along with the node. It acts on
+states by $(\sigma\theta)_{\sigma v,\sigma_vk}=\sigma(\theta_{v,k})$ and on
+plans by $\sigma S=\{\sigma u:u\in S\}$.
+\begin{itemize}
+\item[(H1$'$)] \emph{Automorphic exchangeability.} For every
+identification-free plan $S$ and all $\theta,\theta'$ there is a structure
+automorphism $\sigma$ with $\sigma\theta=\theta'$ and $\sigma S=S$.
+\end{itemize}
+Lemma~\ref{lem:H1suff} in Appendix~\ref{app:H1} proves that (H1$'$) implies
+(H1); in fact the joint law of $(Z_1,\dots,Z_{K_0})$ is then invariant in
+$\theta$ up to a fixed permutation of the focal categories. Neither the prior
+nor the cost vector enters, since (H1) concerns a fixed plan pointwise in
+$\theta$. A local form is easier to check. It suffices that for every latent
+category $(v,k)$ and all $u,u'\in C_{v,k}$ some structure automorphism maps
+$u$ to $u'$, fixes $v$ and $k$, fixes pointwise every other candidate set and
+every other latent category's consumer, and fixes every identification-free
+plan. The typical witness swaps the upstream cones of two candidates when the
+cones are disjoint, isomorphic with matching failure probabilities and cluster
+labels, and joined to the rest of the network only by the edge into $(v,k)$.
+A candidate that belongs to two candidate sets, or a candidate with a
+consumer that its rivals lack, defeats the local form.
+
+\begin{theorem}[Zero decision value of hidden structure]\label{thm:zero}
+Under (H1) and (H2), $\evpi(\pi)=0$; hence by Lemma~\ref{lem:garbling} every
+feasible information-acquisition policy has zero decision value.
+\end{theorem}
+
+\begin{proof}
+(T1) Fix $\theta$. The feasible plan set is finite, so a $\theta$-optimal
+plan $S_\theta$ exists.
+
+\noindent(T2) Suppose $S_\theta$ contains an identification-dependent
+element $u$, and replace it by $a(u)$. Feasibility is preserved because
+$c(a(u))\le c(u)$, and the objective does not increase; both by (H2).
+
+\noindent(T3) Each such replacement strictly decreases the number of
+identification-dependent elements, because $a(u)$ is identification-free by
+(H2) and the status of no other element changes. The plan is finite, so the
+iteration terminates at an identification-free plan $\tilde S_\theta$ that
+is feasible and satisfies
+$j(\tilde S_\theta;\theta)\le j(S_\theta;\theta)$.
+
+\noindent(T4) By $\theta$-optimality of $S_\theta$ the reverse inequality
+also holds, so $j(\tilde S_\theta;\theta)=j(S_\theta;\theta)$.
+
+\noindent(T5) By (H1) the value of any identification-free plan does not
+depend on $\theta$. Let $j^\star$ be the minimum over identification-free
+plans, attained at $S^\star$; both are $\theta$-independent.
+
+\noindent(T6) Since $\tilde S_\theta$ is identification-free,
+$j(\tilde S_\theta;\theta)\ge j^\star$. Since $S^\star$ is feasible,
+$j^\star=j(S^\star;\theta)\ge j(S_\theta;\theta)=j(\tilde S_\theta;\theta)$.
+The two inequalities force $j(S_\theta;\theta)=j^\star$ for every $\theta$.
+
+\noindent(T7) Hence $\mathbb{E}_\theta[j(S_\theta;\theta)]=j^\star$.
+
+\noindent(T8) $S^\star$ is available to the prior planner, whose optimum can
+only be at least as good:
+$\mathbb{E}_\theta[j(S_\pi;\theta)]\le j^\star$.
+
+\noindent(T9) Substituting (T7) and (T8) into \eqref{eq:evpi} gives
+$\evpi\le0$; with $\evpi\ge0$ this forces $\evpi=0$.
+\end{proof}
+
+The argument requires both hypotheses. With (H2) alone, identification-free
+plans are optimal but their value may still depend on $\theta$, and step (T5)
+fails. The argument uses nothing specific to expected loss, which gives the
+following extension.
+
+\begin{corollary}[Monotone law-invariant objectives]\label{cor:lawinv}
+Let $\rho$ be a functional of the loss distribution that is monotone with
+respect to almost sure dominance, and set
+$J_\rho(S;\theta)=\rho(L(S;\theta,\cdot))$. If (H1) holds and (H2) holds
+with $j$ replaced by $J_\rho$, then the value of perfect structural
+information under $J_\rho$ is zero. This covers expected loss,
+$\cvar_\alpha$ for every $\alpha$, and spectral risk measures.
+\end{corollary}
+
+\begin{proof}
+(C1) Steps (T1)--(T4) use only finiteness of the plan set, the cost clause
+and the dominance inequality, all assumed for $J_\rho$.
+
+\noindent(C2) Step (T5) uses (H1) through the \emph{law} of $L$: if the law
+of $L(S;\theta,\cdot)$ does not depend on $\theta$, then neither does
+$\rho(L(S;\theta,\cdot))$ for any functional $\rho$ of that law. This is
+where law invariance rather than mean invariance is required.
+
+\noindent(C3) Steps (T6)--(T9) are algebraic and carry over with $j$
+replaced by $J_\rho$.
+\end{proof}
+
+\section{Bounding the value outside the zero-value regime}\label{sec:bound}
+
+\begin{theorem}[Identification-premium bound, disjoint categories]
+\label{thm:premium}
+Suppose the focal categories' subtrees are node-disjoint, the $\theta_k$ are
+independent across categories, and plans decompose with
+$c(S)=\sum_k c(S_k)$. For a budget $b$ define
+\begin{align}
+v_k^{\mathrm{inv}}(b)&=\min_{c(a)\le b}\;
+\mathbb{E}_{\theta_k}\,p_k(a;\theta_k),\\
+v_k^{\mathrm{full}}(b;\theta_k)&=\min_{c(a)\le b}\;p_k(a;\theta_k),
+\end{align}
+with $p_k$ the starvation probability of focal category $k$ and the minima
+over prior-available actions. Let $\mathcal{B}_k$ be the finite set of action
+costs of category $k$ not exceeding the plan budget $B$. Writing $\ubound$
+for the bound, to keep it distinct from that budget,
+\begin{equation}
+\evpi\;\le\;\ubound\;:=\;\frac{1}{K_0}\sum_k I_k,
+\qquad
+I_k=\mathbb{E}_{\theta_k}\!\left[\max_{b\in\mathcal{B}_k}
+\left(v_k^{\mathrm{inv}}(b)-v_k^{\mathrm{full}}(b;\theta_k)\right)^{\!+}
+\right].
+\label{eq:premium}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+(S1) Every plan induces a budget split by setting $\beta_k=c(S_k)$, and every
+split $\{\beta_k\}$ with $\sum_k\beta_k\le B$, together with per-category
+actions of cost at most $\beta_k$, induces a feasible plan. The
+correspondence is not one-to-one, since several splits induce the same plan,
+but that is not needed below.
+
+\noindent(S2) By independence of the $\theta_k$ and additivity of the loss
+\eqref{eq:loss}, the prior objective separates across categories once the
+split is fixed.
+
+\noindent(S3) Hence, with $A=\min_S\mathbb{E}_\theta j(S;\theta)$,
+$K_0A=\min_{\text{split}}\sum_k v_k^{\mathrm{inv}}(\beta_k)$.
+
+\noindent(S4) Similarly, with $M(\theta)=\min_S j(S;\theta)$,
+$K_0M(\theta)=\min_{\text{split}}\sum_k
+v_k^{\mathrm{full}}(\beta_k;\theta_k)$.
+
+\noindent(S5) Define the pointwise deficit
+$d_k(b;\theta_k)=v_k^{\mathrm{inv}}(b)-v_k^{\mathrm{full}}(b;\theta_k)$; it
+may be negative for particular $\theta_k$, and only its positive part enters.
+
+\noindent(S6) Both value functions are nonincreasing step functions of $b$
+whose jumps occur only at action costs, so $d_k(\cdot;\theta_k)$ is
+piecewise constant and $\sup_{b\le B}d_k(b;\theta_k)^+
+=\max_{b\in\mathcal{B}_k}d_k(b;\theta_k)^+=:D_k(\theta_k)$. This is what
+makes the premium finite to evaluate: a supremum over a continuum of budgets
+is attained on a finite breakpoint set.
+
+\noindent(S7) Pointwise in $\theta$ and for every split,
+$\sum_k v_k^{\mathrm{full}}(\beta_k;\theta_k)\ge
+\sum_k v_k^{\mathrm{inv}}(\beta_k)-\sum_k D_k(\theta_k)$.
+
+\noindent(S8) Minimising both sides over splits preserves the inequality,
+since $f\ge g-c$ pointwise implies $\min f\ge\min g-c$ for a constant $c$;
+the correction term does not depend on the split, which is what allows the
+minimisation to pass through. Hence
+$K_0M(\theta)\ge K_0A-\sum_k D_k(\theta_k)$.
+
+\noindent(S9) Taking $\mathbb{E}_\theta$ of (S8) and using the definition of
+$I_k$ in \eqref{eq:premium} gives $K_0\,\mathbb{E}[M]\ge K_0A-\sum_k I_k$.
+The slack in the bound is introduced earlier, at (S6) and (S7), where a
+category's deficit is replaced by its maximum over budgets and the positive
+part discards the cases in which identification would have hurt.
+
+\noindent(S10) Rearranging, $\evpi=A-\mathbb{E}[M]\le K_0^{-1}\sum_k I_k$.
+\end{proof}
+
+\begin{corollary}[Dilution]\label{cor:dilution}
+Call focal category $k$ \emph{isolated} if its subtree contains exactly one
+latent category $(v,k')$, the candidates in $C_{v,k'}$ have no inputs and
+supply no category other than $(v,k')$, and every other node of the subtree
+fails with probability zero. Let $c_v$ be the least cost of securing a node
+through which $v$'s output reaches the focal node, $v$ included, with
+$c_v=\infty$ if there is none, as when $v=0$. If focal category $k$ is
+isolated, with $m$ equal-cost, equal-risk candidates of risk $\bar q$, a
+uniform prior and securing cost $c_u$, then
+$I_k=\bar q(1-1/m)$ if $c_u\le B$ and $c_u<c_v$, and $I_k=0$ otherwise.
+\end{corollary}
+
+\begin{proof}
+(D1) Isolation fixes the starvation probability. With supplier $\theta$,
+$Z_k=F_\theta$ unless the plan secures $\theta$ or a node through which $v$'s
+output reaches the focal node, in which case $Z_k=0$: the other candidates
+feed nothing, and every other node of the subtree is reliable. Hence
+$p_k(a;\theta)=0$ if $a$ contains $\theta$ or such a node, and
+$p_k(a;\theta)=\bar q$ otherwise. Securing any other node changes nothing.
+
+\noindent(D2) If $b<\min\{c_u,c_v\}$ no useful action is affordable, so both
+value functions equal $\bar q$ and the deficit is zero. If
+$b\ge\min\{c_v,mc_u\}$ both planners can reach zero, by the path cut or by
+securing every candidate, and the deficit is zero.
+
+\noindent(D3) Suppose $c_u<c_v$ and
+$b\in[jc_u,(j+1)c_u)\cap[c_u,\min\{c_v,mc_u\})$ with $1\le j<m$. The
+informed planner secures the true candidate, so $v^{\mathrm{full}}=0$. The
+uninformed planner can afford at most $j$ candidates; under the uniform prior
+any $j$ of them cover the supplier with probability $j/m$, so
+$v^{\mathrm{inv}}=\bar q(m-j)/m$. The deficit $\bar q(m-j)/m$ is largest at
+$j=1$, on $[c_u,\min\{2c_u,c_v\})$, which is nonempty because $c_u<c_v$ and
+$c_u>0$.
+
+\noindent(D4) That interval contains the breakpoint $c_u$, which lies in
+$\mathcal B_k$ exactly when $c_u\le B$. Then $D_k(\theta)=\bar q(1-1/m)$ for
+every $\theta$ and $I_k=\bar q(1-1/m)$. If $c_u>B$, every breakpoint in
+$\mathcal B_k$ falls under (D2). If $c_u\ge c_v$, every budget is either below
+$c_v\le c_u$ or at least $c_v$, and again falls under (D2). In both cases
+$I_k=0$.
+\end{proof}
+
+Isolation is not a formality. In Example~\ref{ex:marginal} of
+Appendix~\ref{app:H1}, raise the cost of securing $w$ above $c_u$ and keep
+$c_u\le B$. Focal category $1$ then has two equal-risk candidates with
+$\bar q=0.1$, but $u_1$ also supplies $(w,b)$, so the category is not
+isolated. Its premium is $I_1=0.025$, not $\bar q(1-1/m)=0.05$: when $u_2$ is
+the supplier, securing it still leaves $w$ exposed through $u_1$, and the
+informed planner's advantage vanishes.
+
+\paragraph{When the bound is attained.} Corollary~\ref{cor:dilution} gives
+the premium $I_k$ exactly. It does not say that $\evpi=\ubound$, and in
+general the two differ. Remark~\ref{rem:loose} gives one reason, an
+affordable path cut. A second is that the uninformed planner can move budget
+between categories. Take two isolated categories, each with $m=2$ candidates
+and $c_u=1$, risks $0.1$ and $0.9$, unaffordable path cuts and $B=2$. The
+uninformed planner secures both candidates of the riskier category, so
+$\evpi=0.05$ while $\ubound=0.25$, although $c_u\le B<c_v$ in both
+categories. Equality does hold in the following case. Suppose the
+assumptions of Theorem~\ref{thm:premium} hold, the $K_0$ focal categories
+are isolated with a common $m$, $\bar q$ and $c_u$ and a uniform prior, every
+path cut costs more than $B$, and $K_0c_u\le B<(K_0+1)c_u$. Then
+$\evpi=\ubound=\bar q(1-1/m)$.
+
+\noindent(E1) Every category has $c_u\le B<c_v$, so
+Corollary~\ref{cor:dilution} gives $I_k=\bar q(1-1/m)$ for each $k$, and
+$\ubound=\bar q(1-1/m)$.
+
+\noindent(E2) Securing the $K_0$ true suppliers costs $K_0c_u\le B$ and sets
+every $Z_k$ to zero, so $\min_Sj(S;\theta)=0$ for every $\theta$.
+
+\noindent(E3) A plan the uninformed planner can afford contains no path cut
+and at most $\lfloor B/c_u\rfloor=K_0$ candidates, and securing any other
+node of the subtrees has no effect, by (D1). If it secures $n_k$ candidates
+of category $k$, that category starves with prior probability
+$\bar q(m-n_k)^+/m$. Since $\sum_kn_k\le K_0$, $K_0$ times its objective is
+at least $\bar q\sum_k(m-n_k)/m\ge\bar qK_0(m-1)/m$, with equality at
+$n_k=1$ for every $k$.
+
+\noindent(E4) Hence the prior-optimal value is $\bar q(1-1/m)$, and by (E2)
+$\evpi=\bar q(1-1/m)=\ubound$.
+
+\begin{proposition}[A checkable witness for (H2)]\label{prop:witness}
+Fix a latent category $(v,k)$ with $v\ne0$, so that $v$ is itself securable,
+and suppose that (i) every candidate $u\in C_{v,k}$ has $v$ as its only
+consumer, and (ii) $c_v\le\min_{u\in C_{v,k}}c_u$. Then securing $v$ is an identification-free replacement
+satisfying both clauses of (H2) for every $u\in C_{v,k}$. Both conditions are
+functions of the public graph and the public cost vector, so they can be
+checked before any structural discovery is commissioned.
+\end{proposition}
+
+\begin{proof}
+(W1) Securing $v$ guarantees $v$'s output to its consumers in every scenario
+and for every $\theta_{v,k}$, so under any plan containing that action the
+focal loss is a function of the scenario and of the plan's other elements
+alone, and its conditional law does not depend on $\theta_{v,k}$: the action is
+identification-free in the sense of Definition~\ref{def:free}. The service of
+$(v,k)$ itself is unchanged; what the action removes is its influence on $L$.
+
+\noindent(W2) The cost clause is (ii) directly: $c_v\le c_u$ for every
+candidate $u\in C_{v,k}$.
+
+\noindent(W3) For the dominance clause, fix $\theta$ and a plan $S$ containing
+$u$. Under the conjunctive cascade, securing $u$ affects the focal loss only
+through the categories $u$ serves, and by (i) the only such category is
+$(v,k)$; its effect there is to remove $u$'s own failure from that category,
+which helps only when $u$ is the true supplier and would otherwise fail.
+Securing $v$ instead guarantees $v$'s output outright, which removes the
+failure of $(v,k)$ and of every other category $v$ consumes, for every
+$\theta$ and every scenario.
+
+\noindent(W4) Hence the operability of every node downstream of $v$ under
+$S\setminus\{u\}\cup\{v\}$ is at least that under $S$, scenario by scenario,
+so $L(S\setminus\{u\}\cup\{v\};\theta,\omega)\le L(S;\theta,\omega)$
+pointwise, and therefore $j(S\setminus\{u\}\cup\{v\};\theta)\le j(S;\theta)$
+for every $\theta$. With (W1) and (W2), (H2) holds with $a(u)=v$.
+\end{proof}
+
+The hypothesis $v\ne0$ is not cosmetic. Plans are subsets of
+$V\setminus\{0\}$, so the focal node cannot be secured and the witness is
+unavailable for exactly the $K_0$ categories that enter the loss directly.
+Proposition~\ref{prop:witness} closes the gap left by (H2) in one direction
+only. It gives a sufficient condition a firm can test on its own graph and
+cost data; it does not decide (H2) in general, and its condition (i) fails
+wherever a candidate supplies more than one consumer.
+Section~\ref{sec:limits} records what remains open.
+
+\begin{remark}[The premium is loose where the theorem bites]\label{rem:loose}
+The maximum in \eqref{eq:premium} ranges over all breakpoints, including
+budgets a planner would not choose. If $c_v\le B$, so that the consumer cut is
+affordable, both planners take it and reach zero loss for that category, so
+its contribution to EVPI is zero; this follows directly, not through
+Theorem~\ref{thm:zero}, whose cost clause does not hold when $c_u<c_v$. Yet
+Corollary~\ref{cor:dilution} still returns $I_k=\bar q(1-1/m)>0$ in exactly
+that case. The bound remains valid, being an upper bound, but it is not tight
+there, and a screening procedure built on it can flag channels whose decision
+value is zero. This accounts for a substantial part of the mass near zero in
+Figure~\ref{fig:tight}: among the enumerated generic instances in which every
+category has an affordable cut, the mean tightness ratio is $0.102$ and
+$67\%$ of instances fall below $0.05$, against $0.203$ and $41\%$ among those
+in which no category does. The looseness is a property of the bound itself.
+\end{remark}
+
+\begin{corollary}[Per-channel bound]\label{cor:evppi}
+Under the assumptions of Theorem~\ref{thm:premium}, the partial value of
+learning $\theta_k$ alone satisfies $\evppi_k\le I_k/K_0$, where
+$\evppi_k=A-\mathbb{E}_{\theta_k}\!\left[\min_S\mathbb{E}_{\theta_{-k}}
+j(S;\theta)\right]$.
+\end{corollary}
+
+\begin{proof}
+(P1) With $\theta_k$ known and the remaining components unknown, the
+separation of step (S2) gives, for each split,
+$K_0\,\mathbb{E}_{\theta_{-k}}j=v_k^{\mathrm{full}}(\beta_k;\theta_k)
++\sum_{j\ne k}v_j^{\mathrm{inv}}(\beta_j)$.
+
+\noindent(P2) By (S6), $v_k^{\mathrm{full}}(\beta_k;\theta_k)\ge
+v_k^{\mathrm{inv}}(\beta_k)-D_k(\theta_k)$ for every $\beta_k$.
+
+\noindent(P3) Adding $\sum_{j\ne k}v_j^{\mathrm{inv}}(\beta_j)$ to both sides
+of (P2) and minimising over splits, permissible because $D_k(\theta_k)$ does
+not depend on the split, gives $K_0\,\min_S\mathbb{E}_{\theta_{-k}}j\ge
+K_0A-D_k(\theta_k)$.
+
+\noindent(P4) Taking $\mathbb{E}_{\theta_k}$ and rearranging gives
+$\evppi_k\le I_k/K_0$.
+\end{proof}
+
+\subsection{Dispersion under a specified construction}\label{sec:disp}
+
+The empirical study introduces heterogeneous candidate risk governed by a
+parameter $\lambda$. Monotonicity in a vague notion of ``more dispersion''
+would not be well posed, since it leaves open which ordering of distributions
+is meant, so we fix the family and compute the premium exactly.
+
+\begin{definition}[Two-point dispersion family $\mathcal D(\lambda)$]
+\label{def:disp}
+A latent category has $m$ candidates and a uniform prior over which of them
+is the supplier. Candidate risks take the two values $\bar q\pm\lambda\delta$
+with equal probability, independently of which candidate is the supplier,
+where $\lambda\in[0,1]$, $\delta>0$ and $\bar q\pm\delta\in[0,1]$. The
+assignment of risks to candidates is latent and exchangeable under the
+prior, and is revealed only by probing. The category is an isolated focal
+category in the sense of Corollary~\ref{cor:dilution}, and $c_v$ is the
+least cost of a path cut as defined there. Actions are: no action at cost $0$;
+secure a named candidate at cost $c_u$; secure the consumer at cost
+$c_v>c_u$.
+\end{definition}
+
+\begin{proposition}[Premium under $\mathcal D(\lambda)$]\label{prop:disp}
+Write $D=\bar q(1-1/m)$ for the dilution term of
+Corollary~\ref{cor:dilution}. Under $\mathcal D(\lambda)$,
+\begin{equation}
+I_k(\lambda)=
+\begin{cases}
+\tfrac12\max\{\lambda\delta,\,D\}+\tfrac12 D, & c_u\le B,\\[3pt]
+\tfrac12\lambda\delta, & c_u>B .
+\end{cases}
+\label{eq:dispprem}
+\end{equation}
+In both cases $I_k$ is nondecreasing in $\lambda$. In the first it is
+constant for $\lambda\le D/\delta$ and strictly increasing above that
+threshold; in the second it is strictly increasing throughout. If the risk
+assignment is instead public, the prior planner can target the fragile
+candidate directly and the premium need not increase in $\lambda$.
+\end{proposition}
+
+\begin{proof}
+(R1) At $b=0$ the only available action is inaction, so
+$v^{\mathrm{inv}}(0)=\mathbb{E}[q_\theta]=\bar q$ by the mean-preserving
+construction, while $v^{\mathrm{full}}(0;\theta)=q_\theta$. The deficit is
+$\bar q-q_\theta$, whose positive part equals $\lambda\delta$ when the
+supplier carries the low risk and $0$ otherwise, each with probability
+$\tfrac12$.
+
+\noindent(R2) For $b\in[c_u,c_v)$ the informed planner secures the supplier,
+so $v^{\mathrm{full}}=0$. The uninformed planner faces exchangeable
+candidates --- this is where latency of the assignment is used --- so every
+named candidate has the same prior value; securing one leaves the category
+exposed with probability $(m-1)/m$ at conditional risk $\bar q$, giving
+$v^{\mathrm{inv}}=D$. This is below the do-nothing value $\bar q$, so it is
+the prior planner's best action on that interval. The deficit is $D$ for
+both risk types.
+
+\noindent(R3) For $b\ge c_v$ both planners cut the consumer and reach zero,
+so the deficit is zero.
+
+\noindent(R4) If $c_u\le B$, the maximum over breakpoints is
+$\max\{\lambda\delta,D\}$ when the supplier carries the low risk, and $D$
+when it carries the high risk. Averaging over the two equally likely types
+gives the first line of \eqref{eq:dispprem}.
+
+\noindent(R5) If $c_u>B$, only the breakpoint $b=0$ is feasible and (R1)
+gives the second line.
+
+\noindent(R6) Both expressions are nondecreasing in $\lambda$ because
+$\lambda\mapsto\max\{\lambda\delta,D\}$ and $\lambda\mapsto\lambda\delta$
+are nondecreasing; the threshold statement follows from
+$\lambda\delta\ge D\iff\lambda\ge D/\delta$.
+
+\noindent(R7) If the assignment is public, the prior planner may secure the
+high-risk candidate deliberately, which changes $v^{\mathrm{inv}}$ and
+removes the exchangeability used in (R2), so monotonicity no longer follows
+from this argument.
+\end{proof}
+
+Equation \eqref{eq:dispprem} predicts a threshold rather than a slope. Below
+$\lambda=D/\delta$ the dilution term dominates and dispersion contributes
+nothing to the premium; only above it does dispersion matter.
+Section~\ref{sec:sweep} reports what the implemented planner does over the
+same range.
+
+\subsection{Why the bound does not transfer to CVaR}\label{sec:cvarhonest}
+
+Theorem~\ref{thm:zero} extends to CVaR at no cost
+(Corollary~\ref{cor:lawinv}). Theorem~\ref{thm:premium} does not, and the
+obstruction is structural.
+
+\begin{proposition}[What can be said]\label{prop:cvartransfer}
+Let $L\in[0,1]$. Then $\mathbb{E}[L]\le\cvar_\alpha(L)\le
+\mathbb{E}[L]/(1-\alpha)$, and, writing $\evpi_{\cvar}$ for the value of
+perfect information under the CVaR objective,
+\begin{equation}
+\evpi_{\cvar}\;\le\;\frac{1}{1-\alpha}\,\evpi
+\;+\;\frac{\alpha}{1-\alpha}\,\mathbb{E}_\theta\!\left[\min_S
+j(S;\theta)\right].
+\label{eq:cvarbound}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+(V1) By the Rockafellar--Uryasev representation~\cite{rockafellar2000},
+$\cvar_\alpha(L)=\min_t\{t+(1-\alpha)^{-1}\mathbb{E}(L-t)^+\}$.
+
+\noindent(V2) Evaluating at $t=0$ and using $L\ge0$ gives
+$\cvar_\alpha(L)\le\mathbb{E}[L]/(1-\alpha)$.
+
+\noindent(V3) For any $t$, since $(1-\alpha)^{-1}\ge1$ and
+$\mathbb{E}(L-t)^+\ge0$,
+$t+(1-\alpha)^{-1}\mathbb{E}(L-t)^+\ge t+\mathbb{E}(L-t)^+
+\ge t+\mathbb{E}(L-t)=\mathbb{E}[L]$; minimising over $t$ gives
+$\cvar_\alpha(L)\ge\mathbb{E}[L]$.
+
+\noindent(V4) With $A_{\cvar}=\min_S\mathbb{E}_\theta J(S;\theta)$, (V2)
+gives $A_{\cvar}\le(1-\alpha)^{-1}A$.
+
+\noindent(V5) By (V3),
+$\mathbb{E}_\theta\min_S J(S;\theta)\ge\mathbb{E}_\theta\min_S j(S;\theta)
+=\mathbb{E}[M]$.
+
+\noindent(V6) Subtracting and using $A=\evpi+\mathbb{E}[M]$ yields
+\eqref{eq:cvarbound}.
+\end{proof}
+
+Inequality \eqref{eq:cvarbound} is not a multiplicative transfer. Its second
+term is proportional to the residual loss $\mathbb{E}_\theta[\min_S
+j(S;\theta)]$, the expected loss that remains after optimal mitigation, which
+is of the same order as the objective itself. At $\alpha=0.9$ the coefficient
+$\alpha/(1-\alpha)$ is $9$, so that term is far larger than any advantage
+measured here. We therefore do not use the inequality. The obstruction is visible at step (S2) of
+Theorem~\ref{thm:premium}, which requires the objective to be \emph{additive}
+across categories. CVaR is subadditive, and subadditivity gives an
+inequality in the direction that destroys the decomposition. A CVaR version
+of Theorem~\ref{thm:premium} would need a different argument, which we do
+not have.
+
+\subsection{Role of CVaR in the empirical model}\label{sec:cvarrole}
+
+Since the premium bound is stated for expected loss, it is reasonable to ask
+why the empirical planner optimises CVaR. Corollary~\ref{cor:lawinv} makes
+the zero-value result a statement about risk-sensitive planning as well, and
+we preferred to take the measurements under a risk-sensitive objective
+rather than under the one for which the result is easiest to obtain.
+Theorem~\ref{thm:premium} is not used to bound any CVaR measurement reported
+in Section~\ref{sec:measure}. One consequence is that the only actionable
+artefact the theory produces, the bound $\ubound$, is never on the same
+objective as any measurement we report. Repeating the benchmark measurements
+under expected loss is a configuration change rather than a new experiment,
+and it would place the ceiling of Section~\ref{sec:money} and the advantage
+of Section~\ref{sec:lam0} on one objective. We have not done it.
+
+\subsection{Unresolved extension: shared subtrees}\label{sec:shared}
+
+When category subtrees share nodes, step (S2) fails and the decomposition
+fails with it. We state what we believe and have not proved.
+
+\begin{conjecture}\label{conj:shared}
+Under a single-cut regime, meaning that optimal plans take at most one
+action per focal-category channel, and with replacement slack, the bound
+\eqref{eq:premium} holds when each shared channel's premium is counted once
+per focal category it feeds.
+\end{conjecture}
+
+\noindent Section~\ref{sec:verify} reports an enumeration search for
+counterexamples that found none, which is evidence about a finite class of
+small instances and not a proof.
+
+\begin{table}[ht]
+\caption{Assumptions, results and where each applies.}\label{tab:applic}
+\small
+\begin{tabular}{@{}p{2.2cm}p{3.8cm}p{3.1cm}p{2.7cm}@{}}
+\toprule
+result & required assumptions & establishes & applicability \\
+\midrule
+Lem.~\ref{lem:garbling} & finite feasible plan set &
+acquisition value $\le\evpi$ & general \\
+Prop.~\ref{prop:H} & implemented planner defined in both regimes &
+$H=\evpi+\varepsilon_\pi-\varepsilon_\theta$ & general \\
+Thm.~\ref{thm:zero} & (H1), (H2) & $\evpi=0$ & (H1) via (H1$'$), checkable in advance;
+(H2) via Prop.~\ref{prop:witness} or a plan-space argument \\
+Prop.~\ref{prop:witness} & $v\ne0$, candidates sole-consumed by $v$,
+$c_v\le\min_u c_u$ & (H2) holds for that category & checkable from public
+data; holds on $2.8\%$ of latent categories here \\
+Cor.~\ref{cor:evppi} & as Thm.~\ref{thm:premium} &
+$\evppi_k\le I_k/K_0$ & per category \\
+Cor.~\ref{cor:lawinv} & (H1), (H2) for a monotone law-invariant objective &
+zero value under CVaR & theoretical \\
+Thm.~\ref{thm:premium} & disjoint subtrees, independent $\theta_k$,
+additive budget & $\evpi\le\ubound$ & subset of networks \\
+Cor.~\ref{cor:dilution} & isolated category, equal cost and risk, uniform prior &
+exact premium $I_k$; $\evpi=\ubound$ only in a sub-case & special case \\
+Prop.~\ref{prop:disp} & family $\mathcal D(\lambda)$ &
+premium in closed form & the overlay used here \\
+Conj.~\ref{conj:shared} & shared channels, single cut, slack &
+unproved bound & exploratory \\
+$\siss$ & additional heuristic construction & screening score &
+not validated \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:applic} collects the assumptions each result needs and where
+it applies, since the hypotheses differ from result to result and the
+distinctions matter for what may be claimed of the measurements.
+
+\section{Computational verification}\label{sec:verify}
+
+The experiments in this section are not offered as proof of the analytical
+results. They serve two purposes: verifying that the implementation matches
+the definitions, and searching finite instances for violations that would
+reveal errors in the stated results. In each category a plan may take no
+action, cut at the consumer, or secure any nonempty subset of the
+candidates. Every instance is enumerated exactly, over all plans and all $\theta$, with no
+sampling inside an instance; seeds are used only to draw the instances
+themselves. The pipeline is
+deterministic and reproduced identical reported outputs on an independent
+machine.
+
+\begin{table}[ht]
+\caption{Enumeration checks. A single violation would falsify the
+corresponding statement.}\label{tab:verify}
+\small
+\begin{tabular}{@{}lrrlr@{}}
+\toprule
+batch & inst. & viol. & auxiliary check & tightness \\
+\midrule
+generic random & 6000 & 0 & --- & mean 0.132, max 0.985 \\
+Thm.~\ref{thm:zero} regime & 2000 & 0 & nonzero-EVPI cases: 0 & --- \\
+Cor.~\ref{cor:dilution} regime & 2000 & 0 & formula mismatches: 0 & mean 0.212, max 1.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:verify} reports the three batches, and Figure~\ref{fig:tight}
+shows the distribution of the ratio of exact EVPI to the bound. Most instances lie near zero, so the bound is loose in general.
+The dilution batch is loose too, with mean ratio $0.212$: the premium is
+exact there, but the bound is not. Equality is reached only on some of its
+instances, and it holds exactly in the sub-case identified after
+Corollary~\ref{cor:dilution}, so the bound cannot be multiplied by any
+constant smaller than one without further assumptions.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.78\textwidth]{fig4_tightness.png}
+\caption{Ratio of exact EVPI to the bound of Theorem~\ref{thm:premium} for
+all 6000 enumerated generic instances, every one of which is plotted. Ratios
+within $10^{-12}$ of zero, floating-point residues of an exact zero, are
+plotted as zero. No value exceeds one.}
+\label{fig:tight}
+\end{figure}
+
+\paragraph{The premium against exact EVPPI.} On miniature disjoint instances
+we computed the exact per-channel $\evppi_k$ by enumeration and compared it
+with the quantity Corollary~\ref{cor:evppi} says bounds it, namely
+$I_k/K_0$. Both sides carry the $1/K_0$ factor, so the slack reported here is
+slack in the bound and not the divisor. Over five independent seeds and
+$24{,}981$ channels, $I_k/K_0$ never fell below the enumerated $\evppi_k$,
+and the whole-instance bound was never violated. On $25.6\%$ of channels
+$\evppi_k$ is zero while the premium $I_k/K_0$ is positive, so on those
+channels the bound carries no information about the value of identification.
+Where $\evppi_k$ is strictly positive, the premium is a median $1.94$ times
+it, with interquartile range $1.37$ to $3.50$. Over all channels the median
+absolute gap $I_k/K_0-\evppi_k$ is $0.023$, with interquartile range $0.011$
+to $0.040$. Rank agreement is moderate and stable across seeds (Spearman
+$0.501$ to $0.518$; Pearson $0.573$ to $0.589$). The rank statistic is
+computed after merging values within $10^{-12}$ of each other, because on
+about a quarter of channels, the $25.6\%$ above, $\evppi_k$ is
+mathematically zero but stored with floating-point residue, which would
+otherwise make its fourth decimal arbitrary.
+
+\paragraph{Search for a counterexample to Conjecture~\ref{conj:shared}.}
+Over five seeds and $100{,}000$ instances in which channels feed several
+focal categories, the conjectured bound was never violated and the minimum
+slack was zero, so it is attained with equality on some instances. The
+search covers instances with at most three channels and three focal
+categories; a counterexample may exist outside that range.
+
+\section{Empirical study}\label{sec:measure}
+
+\subsection{What is real and what is modelled}\label{sec:whatisreal}
+
+The topologies are real. The Willems dataset~\cite{willems2008} is a public
+INFORMS/MSOM supplement of multi-echelon supply chain structures. Everything
+else is modelled: which candidate is the true supplier, the risk attributes
+candidates carry, the probe channel, the disruption correlation structure
+and the failure probabilities are all generated by the model of
+Section~\ref{sec:model}. No public dataset records observed sub-tier
+supplier identities, attributes or probe outcomes. We therefore refer
+throughout to benchmark network topologies with model-generated latent
+overlays, and no conclusion rests on observed disruption outcomes.
+
+\paragraph{Focal categories.} How $K_0$ is determined depends on the chain.
+Where a chain has several sinks, the virtual market focal consumes one
+category per end product, so $K_0$ is the number of sinks; where a chain has a
+single sink, that sink is itself the focal node and $K_0$ is the number of
+input categories it consumes. Across the 32 retained chains, every one of which the loader reports as
+multi-sink, $K_0$ ranges from $2$ to $672$ with a median of $52$. The
+comparison with the values $K\in\{2,3,4\}$ at which exact enumeration is
+possible in Section~\ref{sec:gaps} is therefore not uniform: most chains lie
+far above that range, but three of the 32 have $K_0=2$, inside it. At $K=4$,
+the largest enumerable value, $H$ already understates $\evpi$ on $63\%$ of
+instances, and how the discrepancy behaves at $52$ or $672$ is not known.
+That is why the trend of Section~\ref{sec:gaps} is not extrapolated to the
+benchmark measurements, in either direction.
+
+One consequence of the construction should be stated here rather than left to
+be inferred. The virtual market focal consumes one category per end product
+and each end product leaves the chain through exactly one sink, so every focal
+category is served by a single candidate by construction, as the census of
+Section~\ref{sec:lam0} confirms. The tier-one layer, the one nearest the loss,
+is therefore fully known in every instance, and structural uncertainty can
+reach the loss only indirectly through a cascade from tier two or deeper. A
+design in which the nearest layer is transparent should be expected to measure
+a small advantage; that is a property of the construction and not a finding
+about supply networks.
+
+\paragraph{The two regimes.} The \emph{public-attribute} regime is
+$\lambda=0$: every candidate's risk attribute is common knowledge, and only
+the supplier identities are latent. The \emph{latent-attribute} regime is
+$\lambda=0.8$: nodes at tier two or deeper additionally carry a
+mean-preserving two-point risk attribute, drawn with dispersion $\lambda$
+about the node's nominal rate, whose assignment to candidates is hidden until
+probed. This overlay is the network analogue of the family
+$\mathcal D(\lambda)$ of Definition~\ref{def:disp}, not an instance of it: it
+disperses at node level across a cascade rather than within one isolated
+category with the three actions of Definition~\ref{def:disp}. Comparisons
+between Proposition~\ref{prop:disp} and the measurements are therefore
+qualitative, and we treat them as such in Section~\ref{sec:sweep}.
+
+\paragraph{The synthetic family.} Twelve networks drawn from the scale-free
+family of the pipeline's generator, at a target size of $1000$ nodes. The
+generator allocates that total across tiers and rounds each tier to an
+integer, which yields realised sizes of about $977$; correlation regions are
+assigned by inheritance from a node's consumer, so a supplier usually shares
+its consumer's region. Unlike the benchmark topologies, which are real and carry
+a modelled overlay, these networks are generated in full. The generator and
+its parameters accompany the code. Twelve is the number of evaluation
+networks the pipeline draws per family; it is too few for population claims,
+which is why we treat this family as a set of structural stress tests
+throughout.
+
+\subsection{Design and preprocessing}\label{sec:design}
+
+\begin{table}[ht]
+\caption{Principal parameters of the measured problem. The node cost model,
+the nominal failure rates, the candidate pool sizes and the copula
+correlation are set in the configuration accompanying the code. The tail
+level $\alpha$, the scenario
+counts and the mitigation budget $B$ all govern the numbers in
+Sections~\ref{sec:lam0}--\ref{sec:money}; $B$ in particular fixes which
+actions are affordable and so which breakpoints exist in
+\eqref{eq:premium}.}\label{tab:params}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+parameter & value & source \\
+\midrule
+tail level $\alpha$ & $0.9$ & configuration \\
+mitigation budget $B$ & $9.0$ & run report, all reported runs \\
+scenario draws per evaluation & $160$ & configuration \\
+scenario batch used in planning & $200$ & configuration \\
+correlation clusters & 6 regions & configuration default \\
+seeded evaluations per instance & 10 / 16 / 8 & Tables~\ref{tab:lam0},
+\ref{tab:pilot}, \ref{tab:sweep} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:params} lists the parameters of the measured problem. A
+cost-budgeted greedy backup-qualification planner is held identical across
+all conditions; candidate pools are built only from prior and public
+information; the prior over latent structure is sampled and calibrated to the
+public sourcing multiplicity marginal, nothing being conditioned on any
+observation; evaluation is paired by seed. Planning and evaluation use
+disjoint scenario batches (Table~\ref{tab:params}), so every advantage
+reported below is measured out of sample with respect to the scenarios the
+planner optimised against; a near-zero advantage therefore cannot be
+explained by the planner having overfitted its own batch. A leakage audit confirms
+that the uninformed planner's output does not change when the hidden ground
+truth is permuted. The wider pipeline also implements a probe channel, but
+neither $\evpi$ nor $H$ involves probing: the uninformed planner sees only the
+prior and the informed planner sees $\theta$ outright, so no probe parameter
+enters any number reported below.
+
+\begin{table}[ht]
+\caption{Preprocessing of the benchmark collection.}\label{tab:preproc}
+\small
+\begin{tabular}{@{}lrp{6.4cm}@{}}
+\toprule
+step & networks & criterion \\
+\midrule
+released collection & 38 & Willems~\cite{willems2008} \\
+minimum size filter & $-6$ & fewer than 30 nodes in the focal cone. The six
+excluded chains are 01--06, with cones of 9, 14, 18, 23, 28 and 29 nodes;
+such chains have too few latent tiers for discovery to have anything to
+find \\
+retained & 32 & each given a virtual market focal consuming every end
+product as its own category when the chain has several sinks \\
+evaluated instances & 96 & three seeded overlays per retained network \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The minimum-size threshold in Table~\ref{tab:preproc} is 30 nodes in the
+focal cone. It is the pipeline default and was applied before any outcome was
+observed; the retained set is chains 07--38, which is what the
+archived result files contain. No chain lies near the threshold: the largest
+excluded cone has 29 nodes and the smallest retained one has 39, so the
+partition does not depend on the exact value chosen or on whether the virtual
+market focal is counted. The rule is not neutral, however: it removes the smallest chains and biases the
+retained set towards deeper, larger topologies. Since
+Section~\ref{sec:open} discusses which networks show positive value, that
+bias should be kept in mind; the excluded chains would, if anything, be
+expected to show less value rather than more.
+
+The 96 instances comprise three overlays per underlying network and are
+therefore not independent network replicates. Summary statistics are
+computed at instance level; reliability is assessed at network level; and
+proportions over instances should be read as clustered within 32 networks.
+
+\subsection{Public-attribute regime}\label{sec:lam0}
+
+\begin{table}[ht]
+\caption{Heuristic oracle advantage $H$ in the public-attribute regime,
+$\lambda=0$.}\label{tab:lam0}
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+dataset & inst. & mean & median & exact zeros & $>0.01$ & frac $>0.02$ \\
+\midrule
+Benchmark topologies & 96 & $+0.0011$ & 0.0000 & 24 & 3 & 0.010 \\
+Synthetic $n\!\approx\!977$ & 12 & $+0.0028$ & 0.0000 & 5 & 3 & 0.167 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Six of the 96 benchmark instances have an advantage exceeding twice its own
+standard error, computed across the seeded evaluations of that instance, and
+the largest single instance reaches $0.0212$. That count is a resolution
+statement and should be read as one: with 160 evaluation scenarios at
+$\alpha=0.9$ each CVaR estimate averages the worst 16 draws, so 90 of the 96
+instances are not separable from zero at that criterion. The count of six is
+not easy to read either way: a
+one-sided two-standard-error rule applied to 96 draws from a true null flags
+about $2.2$ on average, and a Poisson approximation puts $P(X\ge6)$ at about
+$0.025$, so six is mildly inconsistent with a global null while remaining
+consistent with the advantage being resolvable on only a handful of instances.
+The mean is better resolved than any single instance, but not by as much as an
+unclustered calculation suggests, and not enough to call it separated from
+zero. Taking the 96 instances as independent gives a standard error of
+$0.00038$ against a mean of $0.00106$, a ratio of $2.8$, and $2.2$ at
+$\lambda=0.8$. Overlays are clustered within chains
+(Section~\ref{sec:design}), however, and computed over the 32 chain means the
+ratio falls to $1.92$ at $\lambda=0$ and, over the 14 chains, to $1.96$ at
+$\lambda=0.8$, two-sided $p=0.064$ and $p=0.072$. The clustered figures are
+the ones to read, and on them neither mean is significantly different from
+zero at conventional levels. We therefore report means and medians as
+descriptions of the distribution rather than as measurements separated from
+zero, and the comparisons of Section~\ref{sec:sweep} inherit that
+limitation. A quarter
+of the instances give exactly zero. Figure~\ref{fig:lam0} shows the
+distributions. We offer no explanation of the mass at zero from
+Theorem~\ref{thm:zero}. At $\lambda=0$ the construction makes candidates
+within a category approximately exchangeable in marginal law, which is not
+sufficient for (H1) (Section~\ref{sec:zero}); and even (H1) alone
+permits positive EVPI, since the $\theta$-optimal plan may be
+identification-dependent and strictly better than every identification-free
+plan, so consistency with (H1) predicts nothing about the mass at zero. Nor
+is (H2) enforced by construction: the pipeline prices every securing action
+by a single cost attached to the node secured, so whether an
+identification-free replacement is no dearer than the
+identification-dependent action it replaces is decided by the two node costs
+and holds for some categories and not others. We can, however, say how far the checkable
+route of Proposition~\ref{prop:witness} goes on these topologies, since both
+of its conditions are read off the public graph and cost vector. Across the
+32 retained chains there are $14{,}977$ categories, of which $13{,}313$
+($88.9\%$) have a candidate pool of size one and so carry nothing to
+identify: their
+contribution to the value of structural information is zero by construction,
+not by any theorem. Of the $1{,}664$ genuinely latent categories, $106$
+($6.4\%$) satisfy the sole-consumer condition, $210$ ($12.6\%$) satisfy the
+cost condition, and $47$ ($2.8\%$) satisfy both, so the witness holds on
+$2.8\%$ of them. The first group provably contributes nothing: with one candidate there is no
+$\theta$ to learn. The second does not. Proposition~\ref{prop:witness}
+establishes (H2) for a category, while Theorem~\ref{thm:zero} is a global
+statement that also requires (H1), and no per-category zero-value result
+appears anywhere in this paper. The $47$ are categories in which one of the
+two hypotheses is verifiably met, and nothing more. None of them sits at the
+focal node, as the hypothesis $v\ne0$ of Proposition~\ref{prop:witness}
+requires: every focal category in these chains has a candidate pool of size
+one. That is forced by the virtual market construction rather than observed
+(Section~\ref{sec:whatisreal}), which also makes the hypothesis $v\ne0$ close
+to a formality here: the categories the witness cannot reach are exactly the
+categories with nothing to identify.
+
+Two things follow, and the second is unwelcome.
+Proposition~\ref{prop:witness} does not explain the mass at zero: at $2.8\%$
+of latent categories it is too rare to be the mechanism, and the sole-consumer
+condition is what binds, as one would expect on chains with shared suppliers.
+What does explain a large part of the observed concentration is candidate
+multiplicity, or its absence: nearly nine categories in ten in this
+collection have one possible supplier. That is a property of the benchmark
+collection, not a result about supply networks, and it should temper how far
+the measurements of this section are read as evidence about networks in
+general. What determines the residual mass at zero among the latent
+categories is unidentified, as Section~\ref{sec:limits} concedes, and the
+agreement with Theorem~\ref{thm:zero} is not evidence that its conditions
+hold.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.49\textwidth]{fig1a_lam0_willems.png}
+\hfill
+\includegraphics[width=0.49\textwidth]{fig1b_lam0_syn.png}
+\caption{Heuristic oracle advantage at $\lambda=0$: benchmark instances
+(left) and synthetic networks (right).}
+\label{fig:lam0}
+\end{figure}
+
+\subsection{Latent-attribute regime}\label{sec:lam08}
+
+\begin{table}[ht]
+\caption{Heuristic oracle advantage at $\lambda=0.8$. The benchmark row uses
+the 14 chains with at least four tiers and at most 350 nodes (7, 8, 9, 11,
+12, 14, 15, 16, 17, 18, 19, 20, 21, 24), three overlays each, 16 seeded
+evaluations per instance; the deeper, smaller chains are those in which
+latent structure has something to hide. Table~\ref{tab:lam0} covers all 32
+retained chains at 10 seeded evaluations per instance, and the sweep of
+Section~\ref{sec:sweep} uses 8. All three counts are taken from the archived
+result files. Seeds are nested within instances, and the instance is the unit
+of analysis throughout (Section~\ref{sec:units}).}\label{tab:pilot}
+\small
+\begin{tabular}{@{}lrrrrr@{}}
+\toprule
+dataset & inst. & median & mean & frac $>0.02$ & max \\
+\midrule
+Benchmark, 14 chains & 42 & 0.0004 & 0.0048 & 0.048 & 0.0915 \\
+Synthetic $n\!\approx\!977$ & 12 & 0.0033 & 0.0038 & 0.167 & 0.0438 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The two regimes differ in these ways: the benchmark median is $0.0004$ here
+against exactly zero in Table~\ref{tab:lam0}, the fraction above $0.02$ is
+$0.048$ against $0.010$, and the largest single instance is more than four
+times as large. The instance sets also differ, so nothing here isolates the
+effect of $\lambda$; Section~\ref{sec:sweep} puts that question on a fixed
+set and finds no monotone relationship, with the highest values of both
+summaries at $\lambda=0$. The levels remain small under the normalisation of
+Section~\ref{sec:model}. The synthetic family
+comprises 12 networks and cannot support population claims; we treat it as a set of structural stress tests and the benchmark
+collection as the empirical anchor. The figure of $0.167$ is two networks
+out of twelve and should not be read as a rate.
+
+Figure~\ref{fig:pilot} shows the instance-level spread behind these
+summaries.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{fig2_lambda_pilots.png}
+\caption{Per-instance advantage at $\lambda=0.8$. The dashed line marks
+$0.02$, the level used in the fraction columns of Tables~\ref{tab:pilot}
+and~\ref{tab:sweep}.}
+\label{fig:pilot}
+\end{figure}
+
+\subsection{Dispersion on a fixed instance set}\label{sec:sweep}
+
+Tables~\ref{tab:lam0} and~\ref{tab:pilot} differ in $\lambda$ and also in
+which instances are measured, so they cannot be compared directly. We
+therefore fixed eight benchmark chains (7, 9, 11, 14, 17, 18, 19, 21; three
+overlays each, 24 instances, 8 seeded evaluations per instance) and swept
+$\lambda$ with everything else held constant within the sweep. The registered
+summary, fixed before the sweep because the median is exactly zero on most of
+these chains, is the mean advantage.
+
+Overlay seeding moves these numbers more than the treatment does: at
+$\lambda=0$ the sweep's maximum over eight chains is $0.0557$ while the
+32-chain run of Table~\ref{tab:lam0} gives $0.0212$, a factor of $2.6$ on the
+same topologies under a different overlay draw. No statement about levels
+across tables is interpretable, and none is made. The sweep is a separate
+execution with its own overlay seeding, so its
+$\lambda=0$ and $\lambda=0.8$ columns are \emph{not} the corresponding columns
+of Tables~\ref{tab:lam0} and~\ref{tab:pilot} restricted to these eight
+chains; they are different draws of the latent structure on the same
+topologies, at a different seed count. The instance-level numbers therefore
+differ, and the maxima in Table~\ref{tab:sweep} are not comparable with those
+in Tables~\ref{tab:lam0} and~\ref{tab:pilot}. Table~\ref{tab:sweep} is
+internally comparable across its own columns, which is what the question
+about $\lambda$ requires, and nothing outside this subsection is inferred
+from it.
+
+\begin{table}[ht]
+\caption{Dispersion sweep on a fixed set of 24 benchmark
+instances.}\label{tab:sweep}
+\small
+\begin{tabular}{@{}lrrrrrr@{}}
+\toprule
+$\lambda$ & 0.0 & 0.2 & 0.4 & 0.6 & 0.8 & 1.0 \\
+\midrule
+mean $H$ & 0.0063 & 0.0020 & 0.0027 & 0.0047 & 0.0045 & 0.0031 \\
+median & 0.0000 & 0.0000 & 0.0000 & 0.0008 & 0.0001 & 0.0000 \\
+fraction $>0.02$ & 0.125 & 0.042 & 0.042 & 0.042 & 0.042 & 0.042 \\
+maximum & 0.0557 & 0.0260 & 0.0549 & 0.0733 & 0.0585 & 0.0881 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The registered statistic, the Spearman correlation of $\lambda$ with the mean
+advantage, is $-0.086$ with $p=0.87$. That test is close to powerless: on six
+grid points a rank correlation must reach $|\rho|\ge0.886$ to attain
+$p<0.05$, so it could only have detected a near-perfect monotone trend. It also discards the pairing, since the same 24
+instances are measured at every $\lambda$. We therefore also ran the
+within-instance analysis over the 144 paired observations, as a stated
+post-hoc. Relative to $\lambda=0$ the mean paired difference is $-0.0043$ at
+$\lambda=0.2$ (paired $t$, $p=0.028$; Wilcoxon $p=0.108$) and $-0.0036$ at
+$\lambda=0.4$ ($p=0.021$; $0.021$), and is not distinguishable from zero at
+$0.6$, $0.8$ and $1.0$. Every difference is negative, but that is one fact
+rather than five: all five contrasts share the $\lambda=0$ cell, which is the
+highest in Table~\ref{tab:sweep} on both the mean and the fraction above
+$0.02$, so a high baseline draw sends all of them the same way. The analysis
+that does not privilege a baseline is a within-instance regression of $H$ on
+$\lambda$ across all 144 observations, which we have not run. Holm correction across
+the five comparisons leaves none significant, the smallest adjusted $p$ being
+$0.105$, so we claim no effect. What the paired analysis does establish is
+that the data give no support to an increase in the advantage with $\lambda$,
+which the six-point rank test was too weak to have shown either way. Nothing in the theory requires otherwise.
+Proposition~\ref{prop:disp} concerns the premium, an upper bound, and it is
+stated for the family $\mathcal D(\lambda)$; the network overlay is an
+analogue of that family rather than an instance of it
+(Section~\ref{sec:whatisreal}), so its threshold $D/\delta$ cannot be
+evaluated here and we do not claim the measurements illustrate it. Even where
+the premium does rise, Proposition~\ref{prop:H} shows a rising bound need not
+produce a rising $H$, since $H$ differs from EVPI by two planner optimality
+gaps of undetermined relative size. Neither argument accounts for the dip
+from $0.0063$ at $\lambda=0$ to $0.0020$ at $\lambda=0.2$, which we leave
+unexplained.
+Figure~\ref{fig:prem} places the two panels on a common horizontal axis. The
+maximum advantage rises with $\lambda$ (Spearman $+0.771$, $p=0.072$); this
+is recorded as exploratory, since the maximum was not the registered summary.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{fig7_premium_vs_measured.png}
+\caption{Above: the identification premium of Proposition~\ref{prop:disp} at
+illustrative parameters, showing the threshold below which dispersion does
+not enter the bound. Below: the measured advantage on the fixed instance
+set. The upper panel is a bound on EVPI and the lower a planner-specific
+measurement; Proposition~\ref{prop:H} explains why they need not move
+together. The vertical scales differ.}
+\label{fig:prem}
+\end{figure}
+
+\subsection{Which networks show positive value}\label{sec:open}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{fig3_willems_chains.png}
+\caption{Per-chain mean advantage at $\lambda=0.8$ over the 14 benchmark
+chains of Table~\ref{tab:pilot}, with the three overlays of each chain shown
+as points. The dashed line marks $0.02$. One chain accounts for most of the
+mass, and its three overlays differ by more than an order of magnitude.}
+\label{fig:chains}
+\end{figure}
+
+Figure~\ref{fig:chains} shows the per-chain picture at $\lambda=0.8$: one
+chain carries most of the mass and the rest sit close to zero. Three networks appear at the top in both regimes, one benchmark chain and two
+synthetic networks. Benchmark chain 09 has a
+mean advantage of $+0.015$ at $\lambda=0$, from overlays of $+0.0212$,
+$+0.0192$ and $+0.0053$, and $0.034$ at $\lambda=0.8$ with a maximum overlay
+of $0.0915$. Synthetic networks 03 and 07 are in the top three at both
+levels. Persistence is not universal: synthetic network 06 has the largest
+advantage at $\lambda=0$ ($+0.047$) and almost closes at $\lambda=0.8$
+($+0.005$), while networks 02 and 08 are exactly zero at $\lambda=0$ and
+open at $\lambda=0.8$. We could not identify what distinguishes them. The correlations below are
+computed at instance level, one observation per network--overlay pair. Since
+overlays are clustered within chains, the effective number of independent
+units is the number of chains, so the reported $p$-values overstate
+precision; none of them supports a claim in either direction, and the point
+of reporting them is that they do not.
+We write \emph{chokepoint census} for the number of categories at tier two or
+deeper whose candidate pool has size one, so that the category fails whenever
+that single candidate does. These are exactly the categories that carry no
+identification problem in the census of Section~\ref{sec:lam0}; the census
+counts them as structural single points of failure rather than as objects of
+learning.
+
+\begin{table}[ht]
+\caption{Rank correlations of the advantage with the three pre-specified
+predictors, and below them the two post-hoc predictors of the text, at
+instance level and at chain level. Overlays are clustered
+within chains, so the chain-level column is the one with independent units;
+the instance-level column is shown because it is what an unclustered analysis
+would report. $K_0$ is constant within a chain, so only its chain-level row
+carries information.}\label{tab:moder}
+\small
+\begin{tabular}{@{}llrrrr@{}}
+\toprule
+& & \multicolumn{2}{c}{instance level} & \multicolumn{2}{c}{chain level} \\
+\cmidrule(l){3-4}\cmidrule(l){5-6}
+regime & predictor & $\rho$ & $p$ & $\rho$ & $p$ \\
+\midrule
+$\lambda=0$ & chokepoint census & $-0.176$ & 0.086 & $-0.331$ & 0.065 \\
+$\lambda=0$ & network size & $-0.044$ & 0.671 & $-0.147$ & 0.421 \\
+$\lambda=0$ & tier depth & $-0.074$ & 0.476 & $-0.183$ & 0.315 \\
+$\lambda=0.8$ & chokepoint census & $+0.235$ & 0.135 & $+0.161$ & 0.582 \\
+$\lambda=0.8$ & network size & $+0.269$ & 0.085 & $+0.351$ & 0.218 \\
+$\lambda=0.8$ & tier depth & $+0.020$ & 0.902 & $+0.070$ & 0.813 \\
+\midrule
+$\lambda=0$ & $K_0$ & $-0.157$ & 0.130 & $-0.329$ & 0.066 \\
+$\lambda=0$ & $H\cdot K_0$ & $-0.079$ & 0.440 & $-0.258$ & 0.154 \\
+$\lambda=0.8$ & $K_0$ & $+0.218$ & 0.170 & $+0.139$ & 0.635 \\
+$\lambda=0.8$ & $H\cdot K_0$ & $+0.349$ & 0.024 & $+0.303$ & 0.293 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A fourth predictor is available and was not part of the pre-specified set:
+$K_0$ itself, which enters the loss as the normalising constant. It is also a
+chain-level covariate, constant across the three overlays of a chain, so an
+instance-level correlation triples the apparent sample without adding any
+information about $K_0$; the chain-level column of Table~\ref{tab:moder} is
+the only one that means anything for it. At chain level the scaled advantage
+$H\cdot K_0$ rises with $K_0$ at $\lambda=0.8$ with $\rho=+0.303$ and
+$p=0.293$, against $\rho=+0.349$ and $p=0.024$ for the same comparison
+computed over instances: the apparent significance was an artefact of
+treating three overlays of a chain as three observations of $K_0$. Read
+directly, the sign would say that larger chains have more focal categories
+rescued in the latent-attribute regime while showing a similar normalised
+advantage, so part of what is reported there as a small number would be the
+$1/K_0$ normalisation rather than a small effect. We do not claim it: the
+comparison is post-hoc, uncorrected, and does not survive clustering.
+
+The advantage itself is a different matter. At $\lambda=0$ and at chain level
+it is related to $K_0$ with $\rho=-0.329$, $p=0.066$, which is
+indistinguishable from the chokepoint census result in the row above
+($\rho=-0.331$, $p=0.065$). The two predictors are close to collinear on this
+collection: the census counts categories whose candidate pool has size one,
+and both grow with the number of end products a chain carries. What
+Table~\ref{tab:moder} shows at $\lambda=0$ is therefore best read as one
+marginal association measured twice, not two, and it points the same way as
+the census result discussed below.
+
+Table~\ref{tab:moder} reports the three pre-specified predictors at both
+levels, with the two post-hoc predictors below them. None of the pre-specified
+three reaches significance at either level, and the chain-level
+column, the one with independent units, is uniformly weaker for the two
+predictors that look promising at $\lambda=0.8$. The strongest chain-level
+association runs opposite to the registered prediction: at $\lambda=0$ the
+chokepoint census is \emph{negatively} related to the advantage
+($\rho=-0.331$, $p=0.065$ over 32 chains), where the pre-specified hypothesis
+predicted a positive one. The sign is not a surprise under the account of
+Section~\ref{sec:lam0}. As defined here the census counts categories with a
+candidate pool of size one, which are exactly the categories with nothing to
+identify, so a chain with more of them has less latent structure and less for
+perfect information to act on. The registered prediction was framed when the
+census was read as a measure of fragility rather than of single-sourcing. With
+six tests and no correction we do not treat the association as a finding, and
+the determinant of the positive-value instances remains open.
+
+\subsection{Expressing the measurements in money}\label{sec:money}
+
+Let $V$ be the value at risk across the focal basket over the exposure
+window the disruption model represents. Two monetary quantities can be formed, and they must be kept apart. They
+differ in two ways, not one. The first is planner-specific and the second is
+not; and the first is a CVaR quantity while the second is stated for expected
+loss, which matters because Proposition~\ref{prop:cvartransfer} shows that
+$\ubound$ does not bound the CVaR value of perfect information.
+
+The first is planner-specific. If $H$ is the advantage measured for an
+implemented planner, $H\cdot V$ is the value that perfect structural
+information delivered to \emph{that} planner. By Proposition~\ref{prop:H} it
+is not an upper bound on what an exact optimiser could achieve.
+Table~\ref{tab:money} reports it as a percentage of $V$, so that no currency
+assumption of ours enters.
+
+\begin{table}[ht]
+\caption{Planner-specific value of perfect structural information, as a
+percentage of the value at risk $V$.}\label{tab:money}
+\small
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+regime & median & 90th percentile & maximum \\
+\midrule
+Benchmark, $\lambda=0$ (96 instances) & $0.00\%$ & $0.42\%$ & $2.12\%$ \\
+Benchmark, $\lambda=0.8$ (42 instances) & $0.04\%$ & $0.81\%$ & $9.15\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The second is a genuine ceiling. Under the assumptions of
+Theorem~\ref{thm:premium}, $\ubound\cdot V$ is a ceiling on the
+exactly-optimised value of perfect structural information, so a discovery
+programme priced above it cannot pay for itself against an optimally planned
+baseline. It is not a ceiling on $H$: by
+Proposition~\ref{prop:H} a heuristic planner's advantage exceeds $\evpi$
+whenever $\varepsilon_\pi>\varepsilon_\theta$, which happens on $14.4\%$ of
+the enumerated instances of Table~\ref{tab:gaps}. Computing $\ubound$ for a specific firm
+means evaluating the premiums on that firm's own channel structure, which is
+the intended use of the procedure in Appendix~\ref{sec:index}. We do not
+report $\ubound$ for the benchmark collection, because those networks do not
+satisfy the disjointness assumption and Conjecture~\ref{conj:shared} is
+unproved.
+
+For a quarter of the benchmark instances in the public-attribute regime
+(24 of 96)
+the measured value is exactly zero, so for those the price this planner could
+justify is zero. Whether an exact optimiser could justify more is not
+measured: by Proposition~\ref{prop:H}, $H=0$ says the planner returned plans
+of equal value with and without $\theta$, not that the information changes no
+decision, and the expected-loss enumeration of Section~\ref{sec:gaps} finds
+$H<\evpi$ on $38\%$ of instances.
+
+\subsection{How far the measured quantity sits from EVPI}\label{sec:gaps}
+
+Proposition~\ref{prop:H} is an identity and by itself says only that the sign
+of $H-\evpi$ is undetermined. We therefore measured the two gaps directly on
+$10{,}000$ miniature instances across five seeds. Every quantity there,
+namely $\evpi$, $\varepsilon_\pi$, $\varepsilon_\theta$ and $H$, is computed by
+exhaustive enumeration, with the heuristic being the same cost-budgeted
+greedy rule used in the network pipeline, and with the action set of
+Section~\ref{sec:verify}. The identity was verified
+numerically: the largest residual $|H-(\evpi+\varepsilon_\pi
+-\varepsilon_\theta)|$ over all instances was $2.8\times10^{-17}$.
+
+\begin{table}[ht]
+\caption{Planner gaps and the discrepancy between $H$ and $\evpi$; five
+seeds, 2000 instances each.}\label{tab:gaps}
+\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+quantity & value \\
+\midrule
+mean $\evpi$ & 0.0409 \\
+mean $H$ & 0.0410 \\
+mean $\varepsilon_\pi$ \ / \ mean $\varepsilon_\theta$ & 0.00210 / 0.00205 \\
+$P(\varepsilon_\pi=0)$ \ / \ $P(\varepsilon_\theta=0)$ & 0.83 / 0.54 \\
+$P(H=\evpi)$ exactly & 0.477 \\
+$P(H>\evpi)$ \ / \ $P(H<\evpi)$ & 0.144 / 0.378 \\
+mean $H-\evpi$ & $+0.00006$ \\
+mean $|H-\evpi|$ as a fraction of mean $\evpi$ & 0.082 \\
+5th, 95th percentile of $H-\evpi$ & $-0.0092$, $+0.0123$ \\
+Spearman $(H,\evpi)$, near-ties merged & 0.973 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:gaps} reports the result. The sign of the discrepancy is not
+stable. Although the mean of $H-\evpi$ is
+positive, $H$ is strictly \emph{below} $\evpi$ more often than above it
+($0.38$ against $0.14$, with the two equal on $48\%$ of instances), and the
+positive mean comes from a longer right tail rather than from a majority.
+The direction also moves with the number of focal categories: the mean
+discrepancy falls from $+0.0005$ at $K=2$ to $-0.0004$ at $K=4$, and
+$P(H<\evpi)$ rises from $0.12$ to $0.63$ over the same range
+(Figure~\ref{fig:gaps}, right). That is three points, on instances small
+enough to enumerate, and we do not extrapolate it in either direction. It is
+enough to prevent us from assuming the sign is favourable at the scale of the
+benchmark networks, whose focal-category counts run from $2$ to $672$
+(Section~\ref{sec:whatisreal}). We had predicted the
+opposite before running the experiment, on the reasoning that a planner
+handed $\theta$ faces an easier problem and would more often be exactly
+optimal. That reasoning is wrong: the prior-side greedy is exactly optimal
+on $83\%$ of instances and the oracle-side greedy on only $54\%$, so
+$\varepsilon_\theta$ exceeds $\varepsilon_\pi$ more often than the reverse
+($37.8\%$ against $14.4\%$, with the two equal on the rest).
+
+Second, the discrepancy is small. It is exactly zero on almost half the
+instances, and its mean absolute size is about $8\%$ of the mean $\evpi$.
+Third, $H$ is a faithful ordering: Spearman correlation with $\evpi$ is
+$0.973$, computed after merging values within $10^{-12}$, as in
+Section~\ref{sec:verify}. So $H$ misstates the level modestly and in an unstable direction,
+while ranking instances almost exactly as $\evpi$ does. One qualification limits how far this
+carries. Following the convention of Section~\ref{sec:threequantities}, the
+enumeration of this subsection is performed under expected loss, while the
+measurements of Sections~\ref{sec:lam0}--\ref{sec:open} are taken under
+CVaR. Its three findings are therefore properties of the expected-loss
+planner pair, and their transfer to the CVaR measurements is an assumption
+rather than a measurement; closing it would require re-running the
+enumeration under CVaR, which we have not done. Subject to that,
+comparisons across instances in
+Sections~\ref{sec:lam0}--\ref{sec:open} rest on the ordering; statements about the level are reported as
+planner-specific throughout, and Section~\ref{sec:money} prices only what
+was measured.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=\textwidth]{fig8_H_vs_evpi.png}
+\caption{Left: distribution of $H-\evpi$ on instances where the two differ.
+Right: the mean discrepancy and the frequency with which $H$ understates
+$\evpi$, against the number of focal categories.}
+\label{fig:gaps}
+\end{figure}
+
+\subsection{Pre-specified tests}\label{sec:prereg}
+
+Predictions were registered before the corresponding data existed, and two
+outcomes bear on the paper. A pre-specified test of rank-based predictive
+validity for the screening score did not meet its reliability criterion, the
+target's split-half rank reliability being at noise level. A
+pre-specified moderator hypothesis, that value rises with the ground-truth
+chokepoint census, was not supported; the outcome is uninformative rather
+than negative, since the target's reliability was too low for any predictor
+to have passed. The pre-specified criteria are stated in
+the header of each analysis script, before any output it produces.
+
+\section{Scope and limitations}\label{sec:limits}
+
+(1) The measured quantity is $H$, not $\evpi$. Section~\ref{sec:gaps}
+measures the gap on miniature instances: the discrepancy is exactly zero on
+about half of them and averages some $8\%$ of $\evpi$ in absolute size, and
+$H$ orders instances almost exactly as $\evpi$ does. Its sign is not stable,
+however, and over the enumerated range $K=2$ to $4$ it trends towards
+understatement as the number of focal categories grows. The benchmark networks have many more categories than the instances
+we could enumerate, so we do not claim the reported values bound $\evpi$
+from either side. The calibration was also carried out under expected loss
+while the reported measurements are under CVaR, so its transfer across
+objectives is assumed rather than shown.
+
+(2) The latent layers are model-generated. The topologies are real; supplier
+identities, risk attributes, probe outcomes and disruption probabilities are
+not. The focal layer is additionally single-sourced by construction, so
+identification can reach the loss only through tier two and deeper
+(Section~\ref{sec:whatisreal}).
+
+(3) Proposition~\ref{prop:disp} has no empirical illustration: on a fixed
+instance set the mean advantage does not depend monotonically on $\lambda$.
+The proposition concerns a bound and is not contradicted, but neither is it
+supported by measurement.
+
+(4) Conjecture~\ref{conj:shared} is open, and the CVaR version of
+Theorem~\ref{thm:premium} does not follow from the expected-loss version.
+
+(5) The bound $\ubound$ is never evaluated on any network in this paper. It is
+verified by enumeration on miniature instances and it defines the ceiling
+price of Section~\ref{sec:money}, but the benchmark topologies violate the
+disjointness assumption of Theorem~\ref{thm:premium} and
+Conjecture~\ref{conj:shared} is unproved, so the one quantity a firm could
+act on is demonstrated only at miniature scale.
+
+(6) The screening score has a verified bound property factor by factor on
+disjoint miniature instances and moderate rank agreement with exact EVPPI
+there. It has no demonstrated validity at network level and none on the
+benchmark collection.
+
+(7) The mitigation budget is fixed at $B=9.0$ throughout and never varied.
+Theorem~\ref{thm:premium} localises everything to budget breakpoints and
+Remark~\ref{rem:loose} shows a category's value depends on whether the
+consumer cut is affordable, so the measured advantages could in principle be
+an artefact of one budget sitting above most cut costs. A sweep over $B$ is
+the sensitivity our own theory motivates most strongly, with a prediction
+attached: value should be largest where $B$ falls between securing costs and
+cut costs. We did not run it.
+
+(8) The determinant of the instances with positive value is unidentified.
+The census of Section~\ref{sec:lam0} rules out the checkable witness of
+Proposition~\ref{prop:witness} as the explanation and points instead at
+candidate multiplicity, which is a feature of this benchmark collection. $K_0$
+itself was tested post-hoc (Section~\ref{sec:open}). At chain level it is
+associated with the advantage at $\lambda=0$ about as strongly as the
+chokepoint census is, and the two are close to collinear here, so the paper
+reports one marginal association rather than a determinant. The apparent rise
+of the $K_0$-scaled advantage with $K_0$ at $\lambda=0.8$ does not survive
+clustering and is not claimed.
+
+(9) Three analyses remain undone: the expected-loss rerun
+(Section~\ref{sec:cvarrole}), the enumeration under CVaR
+(Section~\ref{sec:gaps}) and the budget sweep of item 7. Each is a
+real run rather than a re-aggregation. The paired sweep analysis and the
+$K_0$ scaling, which were re-aggregations, have been carried out and
+are reported in Sections~\ref{sec:sweep} and~\ref{sec:open}; the
+within-instance trend regression of Section~\ref{sec:sweep} has not.
+
+(10) All results concern one mitigation problem: budgeted backup
+qualification under a conjunctive cascade. Inventory buffering, dual
+sourcing and contractual remedies may price structural information
+differently. Concurrent dual sourcing in particular is outside the model, as
+Section~\ref{sec:model} notes: the candidate set is epistemic, and no
+category is served by two suppliers at once.
+
+\section{Conclusion}\label{sec:concl}
+
+When the candidates of every supply category are exchangeable by a symmetry
+of the public network that carries their consumers, upstream subtrees and
+correlation clusters, \emph{and} identification-free actions of no greater cost uniformly dominate, the
+decision value of hidden supply-network structure is exactly zero, and by Lemma~\ref{lem:garbling} no
+information-acquisition policy can recover it. The statement concerns the
+decision problem rather than any method, and it holds for any monotone
+law-invariant objective, including CVaR. Where those conditions fail, the
+value is bounded above, for node-disjoint categories, by identification
+premiums computable in advance from prior and public data, and the bound is attained in a sub-case of a dilution special case.
+On benchmark multi-echelon topologies with model-generated latent overlays,
+the advantage that perfect structural information confers on an implemented
+planner is small under the loss normalisation used here, with a median of
+exactly zero in the public-attribute regime; positive-value cases are
+uncommon in
+the evaluated benchmark set, although their structural determinants remain
+unresolved. That advantage is a planner-specific measurement whose relation
+to EVPI is an identity with a sign we do not establish
+(Proposition~\ref{prop:H}), and on the miniature instances where both can be
+computed the discrepancy trends towards understatement over the enumerated
+range $K=2$ to $4$. The measurements should not be read as bounding the value
+of structural information from either side.
+
+The practical reading is that the value can be examined in advance. Before commissioning sub-tier discovery, a
+firm can ask whether its situation satisfies conditions under which the
+answer is provably nothing, and if not, what the largest possible payoff
+would be. Verifying (H1) through (H1$'$) is a search for automorphisms of the
+public structure, not a comparison of the candidates' marginal risks, costs or
+prior weights, and it is global: a single category whose candidates differ in
+their consumers, upstream subtrees or clusters defeats it.
+Verifying (H2) requires an argument over the plan space, for which we give no
+general procedure, and its cost clause is a real restriction rather than a
+formality: in the parameterisation of Definition~\ref{def:disp} the consumer
+cut costs $c_v>c_u$ and securing every candidate costs $mc_u$, so both
+canonical identification-free replacements are dearer than the
+identification-dependent action they replace and (H2) fails.
+Within this model, therefore, (H2) is witnessed only where a consumer-level
+securing action is no dearer than securing a named candidate, the opposite of
+the ordering $c_v>c_u$ used in Definition~\ref{def:disp}. The in-model
+example is a shared downstream stage that can be dual-sourced or buffered
+once. A contractual remedy priced per category rather than per supplier would
+also serve, but it is not an element of $V$ and so would require an extension
+of the action space that we do not model. Proposition~\ref{prop:witness}
+gives a third route, checkable from public data, and the enumerated batch of
+Table~\ref{tab:verify} instantiates (H1) and (H2) by construction at
+miniature scale. No benchmark network in Section~\ref{sec:measure} is shown
+to satisfy them.
+Where no such action exists, the theorem is silent and
+Theorem~\ref{thm:premium} is the relevant statement.
+
+\section*{Declarations}
+
+\paragraph{Competing interests.} The author declares no competing interests.
+
+\paragraph{Funding.} This research received no funding from any agency in the
+public, commercial or not-for-profit sectors.
+
+\section*{Data and code availability}
+
+The Willems~\cite{willems2008} data is a public INFORMS/MSOM supplement
+(DOI 10.1287/msom.1070.0176) and is not redistributed by us. The experiment
+pipeline, the verifier, the screening-score code, the archived result files
+from which every reported measurement was computed, the console output of
+each reported run and the figure scripts
+are available at
+\url{https://github.com/rahul-k-mishra/supply-network-information-value},
+together with a manifest giving
+the SHA-256 digest of every file in it. Every reported number regenerates
+deterministically from the archived result files at the pinned revision of
+that repository, together with the public dataset. Re-executing the
+experiments from scratch reproduces the reported aggregate statistics but not
+necessarily every instance-level value, since a change of code revision can
+shift the pseudorandom stream.
+
+\begin{appendices}
+
+\section{The screening score}\label{sec:index}
+
+Theorem~\ref{thm:premium} suggests a quantity a firm could evaluate on its own
+network before commissioning discovery work. For each latent channel $(v,k)$
+feeding a set $F(v,k)$ of focal categories, let
+$w=K_0^{-1}\sum_{f\in F}\min\{1,\bar p_f/(1-\alpha)\}$ with $\bar p_f$ the
+prior starvation probability of focal category $f$, the per-category term
+supplied by Proposition~\ref{prop:bern}; let $\phi$ be the increase in
+$K_0^{-1}\sum_{f\in F}\bar p_f$ when the channel is forced inoperative in the
+prior network and everything else is left as it is, one evaluation of the
+prior model; and let $I$ be the premium \eqref{eq:premium} on the channel's
+finite breakpoint set. The \emph{structural information screening score} is
+\begin{equation}
+\siss=\sum_{(v,k)} w\cdot\phi\cdot I .
+\label{eq:siss}
+\end{equation}
+
+The score is placed here rather than in the body because nothing in the paper
+depends on it. Each factor $I$ bounds its own channel's partial value by
+Corollary~\ref{cor:evppi}, but the aggregate applies the weight and
+attribution outside the assumptions of Theorem~\ref{thm:premium}, in
+particular to channels feeding several focal categories, and we have no
+theorem that the aggregate remains an upper bound there. The scales also
+differ: $w$ is a CVaR-scale importance factor while $\phi$ and $I$ are
+expected-loss quantities, so the product is on the scale of neither
+objective. A pre-specified test of its rank-based predictive validity did not
+meet its reliability criterion (Section~\ref{sec:prereg}). We therefore
+report it as a ranking device with no demonstrated validity at network level,
+and use it nowhere in Sections~\ref{sec:verify}--\ref{sec:money}.
+
+\section{Reproducibility and provenance}\label{app:prov}
+
+\paragraph{Data.} Willems~\cite{willems2008}, public INFORMS/MSOM
+supplement, DOI 10.1287/msom.1070.0176. Retained networks and the
+preprocessing rule are given in Table~\ref{tab:preproc}.
+
+\paragraph{Determinism.} Seeds derive from a stable checksum of the instance
+identifier rather than from any hash whose salt varies between processes, so
+every reported figure regenerates exactly from a fixed code revision. Across
+revisions the aggregate statistics are reproduced but instance-level values
+need not be, since a change of revision can shift the pseudorandom stream.
+The verification pipeline reproduced identical reported outputs on an
+independent machine.
+
+\paragraph{Frozen result files.} All reported measurements derive from
+result files archived at submission, with SHA-256 digests
+
+\begin{itemize}
+\item benchmark, $\lambda=0$:\\
+\texttt{2f9e68832da1340dbc3fbd9016f87170e6807faa935e44b0bfcf256c93186486}
+\item synthetic, $\lambda=0$:\\
+\texttt{39a95a658dc0c6035c62f51a18c46048cc3fc8e037c014e085c44dfb609dcbfd}
+\item benchmark, $\lambda=0.8$:\\
+\texttt{2824015b4b0cf6cd1ada407624e4203c048dbaed2947bb4b2efc017328a30f23}
+\item synthetic, $\lambda=0.8$:\\
+\texttt{39282f598119d9a9b7e9466e72128c2b61f0e7a2fdf4988abb280a1ea3c0348e}
+\end{itemize}
+
+\paragraph{Regeneration.} One script regenerates every table and figure in
+Sections~\ref{sec:verify} and~\ref{sec:measure} from those files and prints
+the values that must be reproduced. The enumeration experiments and the
+dispersion sweep are separate scripts whose pass criteria are stated in
+their headers before execution.
+
+\section{The sufficient condition for (H1)}\label{app:H1}
+
+Throughout, $F_v$ is the failure indicator of node $v$, operability is
+defined recursively by $O_v=1$ if $v\in S$ and
+$O_v=(1-F_v)\prod_{k\in K_v}O_{s_{v,k}(\theta)}$ otherwise, where
+$s_{v,k}(\theta)$ is $\theta_{v,k}$ for a latent category and the public
+supplier otherwise, and $Z_k=1-O_{s_{0,k}(\theta)}$.
+
+\begin{example}[Marginal exchangeability is not sufficient]\label{ex:marginal}
+The focal node takes category $1$ from $w$ and category $2$ from $x$, both
+public, so $K_0=2$. Node $w$ consumes a latent category $a$ with
+$C_{w,a}=\{u_1,u_2\}$ and a public category $b$ supplied by $u_1$; $x$, $u_1$
+and $u_2$ have no inputs. Failures are independent, with
+$q_{u_1}=q_{u_2}=0.1$, $q_x=0.15$ and $q_w=0$. All securing costs equal $1$,
+the budget is $B=1$, and the prior is uniform. The candidates have the same
+failure law, cost and prior weight, and differ only in that $u_1$ also
+supplies $(w,b)$.
+
+\noindent(X1) Under the empty plan $Z_2=F_x$. If $\theta=u_1$ then
+$O_w=1-F_{u_1}$, so $\mathbb P(Z_1=1)=0.1$ and $L$ takes the values
+$0,\tfrac12,1$ with probabilities $0.765,0.220,0.015$. If $\theta=u_2$ then
+$O_w=(1-F_{u_1})(1-F_{u_2})$, so $\mathbb P(Z_1=1)=0.19$ and the
+probabilities are $0.6885,0.2830,0.0285$. The law of $L$, and even its mean
+($0.125$ against $0.170$), depends on $\theta$, so (H1) fails.
+
+\noindent(X2) Proposition~\ref{prop:witness} applies to $(w,a)$: $w\ne0$,
+$w$ is the only consumer of $u_1$ and of $u_2$, and $c_w\le\min_uc_u$.
+Securing $w$ sets $Z_1=0$ in every scenario, so it dominates securing either
+candidate pointwise at no greater cost, and (H2) holds.
+
+\noindent(X3) The feasible plans are $\emptyset,\{w\},\{x\},\{u_1\},\{u_2\}$,
+with $j(\cdot;u_1)=0.125,0.075,0.050,0.075,0.125$ and
+$j(\cdot;u_2)=0.170,0.075,0.095,0.125,0.125$. The state-optimal values are
+$0.050$ and $0.075$, with mean $0.0625$; the prior-optimal plan is $\{x\}$,
+with value $0.0725$. Hence $\evpi=0.01>0$. Step (T5) of
+Theorem~\ref{thm:zero} fails: both state-optimal plans are
+identification-free, but $j(\{x\};\theta)$ varies with $\theta$.
+
+Variants in which $u_1$ alone has an upstream supplier that also feeds $x$,
+or in which $u_1$ alone shares a copula cluster with $x$, keep the mean of
+$L$ fixed and change its law, so they defeat Corollary~\ref{cor:lawinv}
+while leaving expected loss unchanged.
+\end{example}
+
+\begin{lemma}[Sufficiency of (H1$'$)]\label{lem:H1suff}
+Let $\sigma$ be a structure automorphism. For every plan $S$ and state
+$\theta$, $Z(\sigma S;\sigma\theta,\cdot)$ has the same law as
+$\Pi_{\sigma}Z(S;\theta,\cdot)$, where $\Pi_\sigma$ permutes the focal
+coordinates by $\sigma_0$. Consequently (H1$'$) implies (H1), and the local
+form stated in Section~\ref{sec:zero} implies (H1$'$).
+\end{lemma}
+
+\begin{proof}
+(Q1) Fix a failure vector $F$ and define $G$ by $G_{\sigma v}=F_v$. The map
+$\sigma$ carries the supplier graph of $\theta$ onto that of $\sigma\theta$:
+for a public category this is (A1), and for a latent one
+$s_{\sigma v,\sigma_vk}(\sigma\theta)=\sigma(\theta_{v,k})
+=\sigma(s_{v,k}(\theta))$ by the definition of $\sigma\theta$. Hence $\sigma v$
+has the same depth in the graph of $\sigma\theta$ as $v$ in the graph of
+$\theta$.
+
+\noindent(Q2) We show $O_{\sigma v}(\sigma S,\sigma\theta,G)
+=O_v(S,\theta,F)$ by induction on that depth. Membership agrees because
+$\sigma$ is a bijection; own failure agrees because $G_{\sigma v}=F_v$; and by
+(Q1) and $K_{\sigma v}=\sigma_v(K_v)$ the inputs of $\sigma v$ are the images
+$\sigma(s_{v,k}(\theta))$, $k\in K_v$, which lie at smaller depth, so the
+induction hypothesis equates their operability with that of
+$s_{v,k}(\theta)$. Substituting into the recursion gives the claim; at depth
+zero the product is empty.
+
+\noindent(Q3) By (A0) and (Q1) the supplier of focal category $\sigma_0k$
+under $\sigma\theta$ is $\sigma(s_{0,k}(\theta))$, so (Q2) gives
+$Z_{\sigma_0k}(\sigma S,\sigma\theta,G)=Z_k(S,\theta,F)$ for every $F$.
+
+\noindent(Q4) Under the one-factor Gaussian copula,
+$F_v=\mathbf 1\{\sqrt{r_g}\,Y_g+\sqrt{1-r_g}\,\varepsilon_v\le
+\Phi^{-1}(q_v)\}$ with $g=\kappa(v)$, $r_g$ the cluster's copula parameter,
+and $(Y_g)$, $(\varepsilon_v)$ independent standard normal. By (A3),
+$G_v=F_{\sigma^{-1}v}$ is the same function of $Y'_g=Y_{\eta^{-1}g}$ and
+$\varepsilon'_v=\varepsilon_{\sigma^{-1}v}$ that $F_v$ is of $Y$ and
+$\varepsilon$. These are re-indexings of independent standard normal families
+by bijections, so $G$ has the law of $F$. With (Q3) this gives the first
+statement.
+
+\noindent(Q5) Given an identification-free $S$ and $\theta,\theta'$, take
+$\sigma$ from (H1$'$). Since $\sigma S=S$ and $\sigma\theta=\theta'$, (Q4)
+gives $Z(S;\theta',\cdot)\overset{d}{=}\Pi_\sigma Z(S;\theta,\cdot)$. The
+loss \eqref{eq:loss} is symmetric in the focal coordinates, so
+$L(S;\theta',\cdot)\overset{d}{=}L(S;\theta,\cdot)$, which is (H1).
+
+\noindent(Q6) For the local form, list the latent categories
+$\ell_1,\dots,\ell_n$ and set $\theta^{(0)}=\theta$. At step $i$ apply the
+automorphism $\tau_i$ that maps $\theta^{(i-1)}_{\ell_i}$ to
+$\theta'_{\ell_i}$ (the identity if they agree). It fixes $\ell_i$, so the
+$\ell_i$ coordinate becomes $\theta'_{\ell_i}$; it fixes every other latent
+category together with its candidates, so the other coordinates are
+unchanged. After $n$ steps the state is $\theta'$. The composition
+$\tau_n\circ\cdots\circ\tau_1$ satisfies (A0)--(A3), maps $\theta$ to
+$\theta'$ and fixes $S$, which is (H1$'$).
+\end{proof}
+
+The requirement $\sigma S=S$ in (H1$'$) may be weakened to
+$L(\sigma S;\theta',\cdot)\overset{d}{=}L(S;\theta',\cdot)$ with the same
+proof, which matters when an identification-free plan meets two candidates'
+upstream cones asymmetrically without changing the loss. (H1$'$) is
+sufficient, not necessary: (H1) can hold by numerical coincidence without any
+symmetry. Steps (T5) of Theorem~\ref{thm:zero} and (C2) of
+Corollary~\ref{cor:lawinv} use only (H1), so both results hold unchanged with
+(H1$'$) in place of (H1).
+
+\end{appendices}
+
+\begin{thebibliography}{99}
+
+\bibitem{artstein1993}
+Artstein, Z., Wets, R.J.-B.: Sensors and information in optimization under
+stochastic uncertainty. Math. Oper. Res. \textbf{18}(3), 523--547 (1993)
+
+\bibitem{artstein1994}
+Artstein, Z.: Probing for information in two-stage stochastic programming and
+the associated consistency. In: Mandl, P., Hu\v{s}kov\'a, M. (eds.)
+Asymptotic Statistics, pp. 21--33. Physica, Heidelberg (1994)
+
+\bibitem{artstein1999}
+Artstein, Z.: Gains and costs of information in stochastic programming.
+Ann. Oper. Res. \textbf{85}, 129--152 (1999)
+
+\bibitem{artzner1999}
+Artzner, P., Delbaen, F., Eber, J.-M., Heath, D.: Coherent measures of risk.
+Math. Finance \textbf{9}(3), 203--228 (1999)
+
+\bibitem{avriel1970}
+Avriel, M., Williams, A.C.: The value of information and stochastic
+programming. Oper. Res. \textbf{18}(5), 947--954 (1970)
+
+\bibitem{birge1982}
+Birge, J.R.: The value of the stochastic solution in stochastic linear
+programs with fixed recourse. Math. Program. \textbf{24}, 314--325 (1982)
+
+\bibitem{blackwell1953}
+Blackwell, D.: Equivalent comparisons of experiments. Ann. Math. Stat.
+\textbf{24}(2), 265--272 (1953)
+
+\bibitem{brintrup2018}
+Brintrup, A., Wichmann, P., Woodall, P., McFarlane, D., Nicks, E., Krechel,
+W.: Predicting hidden links in supply networks. Complexity \textbf{2018},
+article 9104387, 1--12 (2018)
+
+\bibitem{caridi2014}
+Caridi, M., Moretto, A., Perego, A., Tumino, A.: The benefits of supply
+chain visibility: a value assessment model. Int. J. Prod. Econ.
+\textbf{151}, 1--19 (2014)
+
+\bibitem{cermeno2026}
+Cerme\~{n}o, J.E., Rodas, R.: Unlocking supply chain economic value through
+multi-tier supplier network visibility. Capstone report, MIT Center for
+Transportation and Logistics (2026)
+
+\bibitem{goel2006}
+Goel, V., Grossmann, I.E.: A class of stochastic programs with decision
+dependent uncertainty. Math. Program. \textbf{108}, 355--394 (2006)
+
+\bibitem{golovin2011}
+Golovin, D., Krause, A.: Adaptive submodularity: theory and applications in
+active learning and stochastic optimization. J. Artif. Intell. Res.
+\textbf{42}, 427--486 (2011)
+
+\bibitem{hausch1983}
+Hausch, D.B., Ziemba, W.T.: Bounds on the value of information in uncertain
+decision problems II. Stochastics \textbf{10}, 181--217 (1983)
+
+\bibitem{heath2024}
+Heath, A., Kunst, N., Jackson, C. (eds.): Value of Information for
+Healthcare Decision-Making. Chapman and Hall/CRC, Boca Raton (2024)
+
+\bibitem{howard1966}
+Howard, R.A.: Information value theory. IEEE Trans. Syst. Sci. Cybern.
+\textbf{2}(1), 22--26 (1966)
+
+\bibitem{huang1977}
+Huang, C.C., Vertinsky, I., Ziemba, W.T.: Sharp bounds on the value of
+perfect information. Oper. Res. \textbf{25}(1), 128--139 (1977)
+
+\bibitem{javdani2014}
+Javdani, S., Chen, Y., Karbasi, A., Krause, A., Bagnell, D., Srinivasa, S.:
+Near optimal Bayesian active learning for decision making. In: Proceedings
+of AISTATS, PMLR \textbf{33}, pp. 430--438 (2014)
+
+\bibitem{jonsbraten1998}
+Jonsbr{\aa}ten, T.W., Wets, R.J.-B., Woodruff, D.L.: A class of stochastic
+programs with decision dependent random elements. Ann. Oper. Res.
+\textbf{82}, 83--106 (1998)
+
+\bibitem{kosasih2022}
+Kosasih, E.E., Brintrup, A.: A machine learning approach for predicting
+hidden links in supply chain with graph neural networks. Int. J. Prod. Res.
+\textbf{60}(17), 5380--5393 (2022)
+
+\bibitem{ma2024}
+Ma, Z., Kim, Y., Linderoth, J., Luedtke, J., Matthews, L.R.:
+Probing-enhanced stochastic programming. arXiv:2407.10669 (2024)
+
+\bibitem{madansky1960}
+Madansky, A.: Inequalities for stochastic linear programming problems.
+Manage. Sci. \textbf{6}(2), 197--204 (1960)
+
+\bibitem{raiffa1961}
+Raiffa, H., Schlaifer, R.: Applied Statistical Decision Theory. Harvard
+Business School, Boston (1961)
+
+\bibitem{rockafellar2000}
+Rockafellar, R.T., Uryasev, S.: Optimization of conditional value-at-risk.
+J. Risk \textbf{2}(3), 21--41 (2000)
+
+\bibitem{simchi2015}
+Simchi-Levi, D., Schmidt, W., Wei, Y., Zhang, P.Y., Combs, K., Ge, Y.,
+Gusikhin, O., Sanders, M., Zhang, D.: Identifying risks and mitigating
+disruptions in the automotive supply chain. Interfaces \textbf{45}(5),
+375--390 (2015)
+
+\bibitem{snyder2016}
+Snyder, L.V., Atan, Z., Peng, P., Rong, Y., Schmitt, A.J., Sinsoysal, B.:
+OR/MS models for supply chain disruptions: a review. IIE Trans.
+\textbf{48}(2), 89--109 (2016)
+
+\bibitem{strong2014}
+Strong, M., Oakley, J.E., Brennan, A.: Estimating multiparameter partial
+expected value of perfect information from a probabilistic sensitivity
+analysis sample. Med. Decis. Making \textbf{34}(3), 311--326 (2014)
+
+\bibitem{tomlin2006}
+Tomlin, B.: On the value of mitigation and contingency strategies for
+managing supply chain disruption risks. Manage. Sci. \textbf{52}(5),
+639--657 (2006)
+
+\bibitem{vayanos2025}
+Vayanos, P., Georghiou, A., Yu, H.: Robust optimization with
+decision-dependent information discovery. Manage. Sci. \textbf{72}(2),
+1509--1528 (2025)
+
+\bibitem{wagner2010}
+Wagner, S.M., Neshat, N.: Assessing the vulnerability of supply chains using
+graph theory. Int. J. Prod. Econ. \textbf{126}(1), 121--129 (2010)
+
+\bibitem{willems2008}
+Willems, S.P.: Data set --- real-world multiechelon supply chains used for
+inventory optimization. Manuf. Serv. Oper. Manag. \textbf{10}(1), 19--23
+(2008)
+
+\bibitem{ziemba1975}
+Ziemba, W.T., Butterworth, J.E.: Bounds on the value of information in
+uncertain decision problems. Stochastics \textbf{1}, 361--378 (1975)
+
+\end{thebibliography}
+
+\end{document}

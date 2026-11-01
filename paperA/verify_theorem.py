@@ -172,6 +172,9 @@ def main():
     ap.add_argument("--n-generic", type=int, default=6000)
     ap.add_argument("--n-t1", type=int, default=2000)
     ap.add_argument("--n-c1", type=int, default=2000)
+    ap.add_argument("--tie-tol", type=float, default=1e-12,
+                    help="ratios within this distance of 0 are residues of a "
+                         "true zero and are set to exactly 0 before plotting")
     ap.add_argument("--actions", choices=("subsets", "legacy"),
                     default="subsets",
                     help="per-category action algebra; 'legacy' reproduces "
@@ -225,16 +228,36 @@ def main():
     df = pd.DataFrame(rows)
     df.to_csv("verify_tightness.csv", index=False)
 
+    n_gen = int((df["mode"] == "generic").sum())
     gen_ratio = df.loc[df["mode"] == "generic", "ratio"].dropna()
+    n_zero_bound = n_gen - len(gen_ratio)
+    # A ratio within tie-tol of zero is the floating-point residue of a true
+    # zero (EVPI = 0 up to ~1e-16); set it to exactly 0 so that it is plotted
+    # in the zero bin rather than dropped below the histogram's left edge.
+    n_clamped = int(((gen_ratio.abs() <= a.tie_tol) & (gen_ratio != 0)).sum())
+    n_neg_before = int((gen_ratio < 0).sum())
+    plot_ratio = gen_ratio.where(gen_ratio.abs() > a.tie_tol, 0.0)
+    edges = np.linspace(0.0, 1.0, 31)          # [0, 1/30), ..., [29/30, 1]
+    inside = (plot_ratio >= edges[0]) & (plot_ratio <= edges[-1])
+    counts, _ = np.histogram(plot_ratio[inside], bins=edges)
+    n_plotted = int(counts.sum())
+    print(f"\nFigure 4: generic instances {n_gen}; zero bound (no ratio) "
+          f"{n_zero_bound}; ratios {len(gen_ratio)}; negative before clamping "
+          f"{n_neg_before}; clamped to 0 (|ratio| <= {a.tie_tol:g}) "
+          f"{n_clamped}; PLOTTED {n_plotted}; outside [0, 1] after clamping "
+          f"{len(plot_ratio) - n_plotted}"
+          f" (min {plot_ratio.min():.3e}, max {plot_ratio.max():.6f})")
+    print(f"Figure 4: zero bin {int(counts[0])}, of which exactly 0 "
+          f"{int((plot_ratio == 0).sum())}")
     fig, ax = plt.subplots(figsize=(5.6, 3.1))
-    ax.hist(gen_ratio, bins=30, range=(0, 1), color="#8fbf8f",
+    ax.hist(plot_ratio[inside], bins=edges, color="#8fbf8f",
             edgecolor="k", linewidth=0.4)
     ax.set_xlim(0, 1.02)
     ax.set_xlabel("EVPI / premium bound $U$  (per instance)")
     ax.set_ylabel("count")
-    ax.set_title(f"Bound tightness, {len(gen_ratio)} generic instances "
-                 f"({int((df['mode']=='generic').sum() - len(gen_ratio))} "
-                 "with zero bound excluded, 0 violations)", fontsize=8.5)
+    ax.set_title(f"Bound tightness, {n_plotted} of {n_gen} generic instances "
+                 f"plotted\n({n_zero_bound} with zero bound excluded, "
+                 f"{report['generic']['violations']} violations)", fontsize=8.5)
     fig.tight_layout()
     fig.savefig("fig4_tightness.png", dpi=200)
     print("\nwrote verify_tightness.csv and fig4_tightness.png")

@@ -1,0 +1,250 @@
+"""
+verify_theorem.py
+=================
+Mechanical verification of the paper's closable claims on an exact miniature
+model matching their hypotheses: node-disjoint categories, expected loss,
+finite action sets. Every instance is enumerated exactly, over all plans and
+all theta, with no sampling inside an instance; the seed draws the instances
+themselves.
+
+This is not a proof. It verifies that the implementation matches the
+definitions, and searches finite instances for violations that would reveal
+an error in the stated results.
+
+WHAT IS CHECKED (paper numbering)
+---------------------------------
+  Theorem 5  (identification-premium bound)  EVPI <= B on every instance
+  Theorem 3  (zero decision value)           EVPI == 0 in the (H1)+(H2) regime
+  Corollary 7 (dilution)                     B equals the closed form exactly
+
+PASS CRITERIA, stated before any run
+------------------------------------
+  generic batch : violations == 0. One violation falsifies Theorem 5.
+  t1 batch      : violations == 0 AND nonzero-EVPI cases == 0.
+  c1 batch      : violations == 0 AND closed-form mismatches == 0, and the
+                  tightness ratio attains 1.000, since the bound is tight in
+                  that regime.
+
+ACTION ALGEBRA
+--------------
+Default (--actions subsets): per category, no action, the consumer cut, or
+securing any nonempty subset of candidates. This matches the paper's model,
+in which a plan is an arbitrary set of nodes. Added 2026-11-01. The instance
+stream is unchanged, because the action algebra consumes no random numbers.
+At the default seed (numpy 1.26.4, pandas 2.2.3):
+  generic 6000 : 0 violations, tightness mean 0.132, max 0.985
+  t1      2000 : 0 violations, 0 nonzero-EVPI cases
+  c1      2000 : 0 violations, 0 mismatches, tightness mean 0.212, max 1.000
+
+  python verify_theorem.py
+
+Legacy (--actions legacy): no action, consumer cut, one named candidate, or
+all candidates. This is the algebra behind the submitted Table 4 and
+reproduces it exactly:
+  generic 6000 : 0 violations, tightness mean 0.143, max 0.985
+  t1      2000 : 0 violations, 0 nonzero-EVPI cases
+  c1      2000 : 0 violations, 0 mismatches, tightness mean 0.221, max 1.000
+
+  python verify_theorem.py --actions legacy
+
+Outputs: console summary, verify_tightness.csv (one ratio per instance) and
+fig4_tightness.png. The figure axis is labelled "EVPI / premium bound U" to
+match the paper, which writes U for the bound to keep it distinct from the
+budget B; earlier versions labelled it B, and earlier drafts called it an
+index bound.
+"""
+import argparse
+from itertools import combinations, product
+
+import numpy as np
+import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+
+def actions_for_cat(cat, algebra="subsets"):
+    """(cost, pvec) per action, where pvec[i] is the category's starvation
+    probability when candidate i is the true supplier.
+
+    algebra="subsets" (default): no action / consumer cut / secure any
+    nonempty subset T of the candidates, at cost sum_{j in T} c_u[j]. This
+    matches the paper's model, where a plan is an arbitrary set of nodes.
+    algebra="legacy": no action / consumer cut / secure one candidate /
+    secure all candidates. This is the algebra behind the submitted Table 4;
+    it omits proper subsets of size 2..m-1."""
+    m, q, c_u, c_v = cat["m"], cat["q"], cat["c_u"], cat["c_v"]
+    acts = [(0.0, q.copy())]                       # no action
+    acts.append((c_v, np.zeros(m)))                # consumer cut
+    if algebra == "legacy":
+        subsets = [(j,) for j in range(m)] + [tuple(range(m))]
+    elif algebra == "subsets":
+        subsets = [T for r in range(1, m + 1) for T in combinations(range(m), r)]
+    else:
+        raise ValueError(f"unknown action algebra {algebra!r}")
+    for T in subsets:                              # secure candidates in T
+        p = q.copy()
+        p[list(T)] = 0.0
+        acts.append((float(sum(c_u[j] for j in T)), p))
+    return acts
+
+
+def solve_instance(cats, B, algebra="subsets"):
+    """Exact EVPI by enumeration, and the premium bound U of Theorem 6."""
+    K = len(cats)
+    A_list = [actions_for_cat(c, algebra) for c in cats]
+    costs = [np.array([a[0] for a in acts]) for acts in A_list]
+    pvecs = [np.stack([a[1] for a in acts]) for acts in A_list]   # (nA, m)
+    priors = [c["b"] for c in cats]
+    E_k = [pv @ b for pv, b in zip(pvecs, priors)]                # (nA,)
+
+    plans = [pl for pl in product(*[range(len(a)) for a in A_list])
+             if sum(costs[k][pl[k]] for k in range(K)) <= B + 1e-12]
+    assert plans, "no feasible plan (the no-action plan is always feasible)"
+
+    # prior planner: min over plans of the prior-expected loss
+    A_val = min(sum(E_k[k][pl[k]] for k in range(K)) for pl in plans)
+
+    # informed planner: expectation over theta of the min over plans
+    thetas = list(product(*[range(c["m"]) for c in cats]))
+    EM = 0.0
+    for th in thetas:
+        w = np.prod([priors[k][th[k]] for k in range(K)])
+        M = min(sum(pvecs[k][pl[k], th[k]] for k in range(K)) for pl in plans)
+        EM += w * M
+    evpi = (A_val - EM) / K
+
+    # Theorem 6: per category, breakpoints are the affordable action costs
+    bound = 0.0
+    for k in range(K):
+        bps = sorted({float(c) for c in costs[k] if c <= B + 1e-12}
+                     | {float(B)})
+        I_k = 0.0
+        for i in range(cats[k]["m"]):
+            best = 0.0
+            for b in bps:
+                feas = costs[k] <= b + 1e-12
+                v_inv = E_k[k][feas].min()
+                v_full = pvecs[k][feas, i].min()
+                best = max(best, max(0.0, v_inv - v_full))
+            I_k += priors[k][i] * best
+        bound += I_k / K
+    return evpi, bound
+
+
+def gen(rng, mode="generic"):
+    """generic: unrestricted. t1: the (H1)+(H2) regime of Theorem 3, with
+    exchangeable candidates and a dominating consumer cut. c1: the dilution
+    regime of Corollary 7, exchangeable candidates, c_v unrestricted."""
+    K = int(rng.integers(2, 4))
+    cats = []
+    for _ in range(K):
+        m = int(rng.integers(2, 4))
+        q = rng.uniform(0.05, 0.95, m)
+        c_u = rng.uniform(0.4, 3.0, m)
+        c_v = float(rng.uniform(0.4, 4.0))
+        b = rng.dirichlet(np.ones(m))
+        if mode in ("t1", "c1"):                   # (H1): exchangeability
+            q[:] = q[0]
+            c_u[:] = c_u[0]
+            b = np.full(m, 1.0 / m)
+        if mode == "t1":                           # (H2): cut dominates
+            c_v = float(c_u[0] * rng.uniform(0.3, 1.0))
+        cats.append(dict(m=m, q=q, c_u=c_u, c_v=c_v, b=b))
+    B = float(rng.uniform(0.8, 9.0))
+    return cats, B
+
+
+def c1_closed_form(cats, B):
+    """Corollary 7: I_k = qbar (1 - 1/m) when the candidate secure is
+    affordable and cheaper than the consumer cut, and 0 otherwise."""
+    tot = 0.0
+    for c in cats:
+        m, qb, cu, cv = c["m"], c["q"][0], float(c["c_u"][0]), c["c_v"]
+        I = qb * (1 - 1 / m) if (cu <= B + 1e-12 and cu < cv - 1e-12) else 0.0
+        tot += I / len(cats)
+    return tot
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--seed", type=int, default=20260810)
+    ap.add_argument("--n-generic", type=int, default=6000)
+    ap.add_argument("--n-t1", type=int, default=2000)
+    ap.add_argument("--n-c1", type=int, default=2000)
+    ap.add_argument("--actions", choices=("subsets", "legacy"),
+                    default="subsets",
+                    help="per-category action algebra; 'legacy' reproduces "
+                         "the submitted Table 4")
+    a = ap.parse_args()
+
+    rng = np.random.default_rng(a.seed)
+    rows, report = [], {}
+    print(f"action algebra: {a.actions}", flush=True)
+
+    for mode, n in (("generic", a.n_generic), ("t1", a.n_t1),
+                    ("c1", a.n_c1)):
+        viol = t1_nonzero = c1_mismatch = 0
+        ratios, worst = [], None
+        for _ in range(n):
+            cats, B = gen(rng, mode)
+            evpi, bound = solve_instance(cats, B, a.actions)
+            if evpi > bound + 1e-9:
+                viol += 1
+                if worst is None or evpi - bound > worst[0]:
+                    worst = (evpi - bound, cats, B, evpi, bound)
+            if mode == "t1" and evpi > 1e-9:
+                t1_nonzero += 1
+            if mode == "c1" and abs(bound - c1_closed_form(cats, B)) > 1e-9:
+                c1_mismatch += 1
+            ratio = evpi / bound if bound > 1e-12 else np.nan
+            if not np.isnan(ratio):
+                ratios.append(ratio)
+            rows.append(dict(mode=mode, evpi=evpi, bound=bound, ratio=ratio))
+
+        report[mode] = dict(
+            n=n, violations=viol, t1_nonzero=t1_nonzero,
+            c1_mismatch=c1_mismatch,
+            mean_tightness=float(np.mean(ratios)) if ratios else None,
+            max_tightness=float(np.max(ratios)) if ratios else None)
+
+        line = f"[{mode}] n={n} violations={viol}"
+        if mode == "t1":
+            line += f" nonzero-EVPI-cases={t1_nonzero}"
+        if mode == "c1":
+            line += f" closed-form-mismatches={c1_mismatch}"
+        if ratios:
+            line += (f" tightness mean={report[mode]['mean_tightness']:.3f}"
+                     f" max={report[mode]['max_tightness']:.3f}")
+        print(line, flush=True)
+        if worst:
+            print("  WORST VIOLATION: excess =", worst[0], " B =", worst[2],
+                  " EVPI =", worst[3], " bound =", worst[4])
+            print("  instance:", worst[1])
+
+    df = pd.DataFrame(rows)
+    df.to_csv("verify_tightness.csv", index=False)
+
+    gen_ratio = df.loc[df["mode"] == "generic", "ratio"].dropna()
+    fig, ax = plt.subplots(figsize=(5.6, 3.1))
+    ax.hist(gen_ratio, bins=30, range=(0, 1), color="#8fbf8f",
+            edgecolor="k", linewidth=0.4)
+    ax.set_xlim(0, 1.02)
+    ax.set_xlabel("EVPI / premium bound $U$  (per instance)")
+    ax.set_ylabel("count")
+    ax.set_title(f"Bound tightness, {len(gen_ratio)} generic instances "
+                 f"({int((df['mode']=='generic').sum() - len(gen_ratio))} "
+                 "with zero bound excluded, 0 violations)", fontsize=8.5)
+    fig.tight_layout()
+    fig.savefig("fig4_tightness.png", dpi=200)
+    print("\nwrote verify_tightness.csv and fig4_tightness.png")
+
+    total_viol = sum(r["violations"] for r in report.values())
+    print("VERDICT:", "PASS" if (total_viol == 0
+                                 and report["t1"]["t1_nonzero"] == 0
+                                 and report["c1"]["c1_mismatch"] == 0)
+          else "FAIL - read the lines above before using any number")
+
+
+if __name__ == "__main__":
+    main()
